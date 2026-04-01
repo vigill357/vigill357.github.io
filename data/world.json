@@ -3,27 +3,26 @@
     "title": "《潜渊之旅》",
     "synopsis": "“开始深潜吧，找回真正的你...”他坚定地说，她不舍地说。",
     "status": "连载中",
-    "genre": "软科幻"
   },
 
 
   "stories": [
-    { "title": "《衍生故事标题》", "status": "完结",  "words": "8,600 字", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
-    { "title": "《衍生故事标题》", "status": "连载中", "chapters": "3 章",  "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
-    { "title": "《衍生故事标题》", "status": "完结",  "words": "5,200 字", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" }
+    { "title": "《衍生故事标题》", "status": "--",  "words": "--", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
+    { "title": "《衍生故事标题》", "status": "--", "chapters": "--",  "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
+    { "title": "《衍生故事标题》", "status": "--",  "words": "--", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" }
   ],
 
   "gallery": [
-    { "id": "char-01",    "type": "角色", "label": "角色名 · 肖像" },
-    { "id": "scene-01",   "type": "场景", "label": "场景标题" },
-    { "id": "char-02",    "type": "角色", "label": "角色名 · 肖像" },
-    { "id": "concept-01", "type": "概念", "label": "概念设计" }
+    { "id": "char-01",    "type": "--", "label": "--" },
+    { "id": "scene-01",   "type": "--", "label": "--" },
+    { "id": "char-02",    "type": "--", "label": "--" },
+    { "id": "concept-01", "type": "--", "label": "--" }
   ],
 
   "world": {
-    "characters":    12,
-    "locations":      8,
-    "timelineNodes": 24,
-    "rules":         15
+    "characters":     0,
+    "locations":      0,
+    "timelineNodes":  0,
+    "rules":          0
   }
 }
