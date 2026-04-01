@@ -25,13 +25,15 @@ const Cursor = (() => {
   }
 
   /** 可交互元素悬停放大 */
-  function bindHover() {
-    const targets = 'a, button, .novel-main, .story-card, .world-card, .gallery-item';
-    document.querySelectorAll(targets).forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('big'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('big'));
-    });
-  }
+function bindHover() {
+  const targets = 'a, button, .novel-main, .story-card, .world-card, .gallery-item, .chapter-item';
+  document.addEventListener('mouseover', e => {
+    if (e.target.closest(targets)) ring.classList.add('big');
+  });
+  document.addEventListener('mouseout', e => {
+    if (e.target.closest(targets)) ring.classList.remove('big');
+  });
+}
 
   /** 点击波纹 */
   function onRipple(e) {
