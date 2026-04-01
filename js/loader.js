@@ -11,6 +11,11 @@ const Loader = (() => {
     return (text.match(/[\u4e00-\u9fa5]/g) || []).length;
   }
 
+  function fmtWords(n) {
+    if (n >= 10000) return (n / 10000).toFixed(1) + ' 万字';
+    return n + ' 字';
+  }
+
   /**
    * 加载章节列表，渲染到首页侧栏
    */
@@ -23,20 +28,41 @@ const Loader = (() => {
       if (!side) return;
 
       const metas = await Promise.all(
-        folders.map(f => fetch(`${STORIES_ROOT}${f}/meta.json`).then(r => r.json()))
+        folders.map(f =>
+          fetch(`${STORIES_ROOT}${f}/meta.json`)
+            .then(r => r.json())
+            .catch(() => ({ title: f, date: '', synopsis: '' }))
+        )
       );
 
       side.innerHTML = '';
-      metas.forEach((meta, i) => {
+
+      // 可滚动章节列表容器（倒序，最新在顶）
+      const scrollWrap = document.createElement('div');
+      scrollWrap.className = 'novel-side-scroll';
+
+      [...metas].map((meta, i) => ({ meta, i })).reverse().forEach(({ meta, i }) => {
         const a = document.createElement('a');
-        a.href      = `novel.html#ch${i + 1}`;
+        a.href      = 'novel.html';
         a.className = 'chapter-item';
         a.innerHTML = `
-          <div class="ch-title">${meta.title}</div>
+          <div class="ch-title">${meta.title || folders[i]}</div>
           <div class="ch-date">更新于 ${meta.date || '——'}</div>
           <span class="ch-arrow">›</span>`;
-        side.appendChild(a);
+        scrollWrap.appendChild(a);
       });
+
+      side.appendChild(scrollWrap);
+
+      // 底部固定：全部目录
+      const allLink = document.createElement('a');
+      allLink.href      = 'novel.html';
+      allLink.className = 'chapter-item chapter-item--all';
+      allLink.innerHTML = `
+        <div class="ch-title">从头开始 · 全部目录</div>
+        <div class="ch-date">READ MORE →</div>
+        <span class="ch-arrow">›</span>`;
+      side.appendChild(allLink);
 
       updateStats(folders, metas);
 
@@ -46,11 +72,11 @@ const Loader = (() => {
   }
 
   /**
-   * 更新首页 Hero 面板与小说统计
+   * 更新首页 Hero 面板与小说统计（含累计字数）
    */
   async function updateStats(folders, metas) {
     const lastDate = metas.length
-      ? [...metas].sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0].date
+      ? [...metas].sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0].date || '——'
       : '——';
 
     let worldData = {};
@@ -72,6 +98,7 @@ const Loader = (() => {
       if (key && map[key] && val) val.textContent = map[key];
     });
 
+    // 已更新章数（第一个 .stat-val）
     const statVals = document.querySelectorAll('.stat-val');
     if (statVals[0]) statVals[0].textContent = `${folders.length} 章`;
 
@@ -80,6 +107,21 @@ const Loader = (() => {
       const descEl  = document.querySelector('.novel-desc');
       if (titleEl && worldData.novel.title)    titleEl.textContent = worldData.novel.title;
       if (descEl  && worldData.novel.synopsis) descEl.textContent  = worldData.novel.synopsis;
+    }
+
+    // 累计字数：并行拉取所有正文计算（第二个 .stat-val）
+    let total = 0;
+    await Promise.all(
+      folders.map(async f => {
+        try {
+          const r    = await fetch(`${STORIES_ROOT}${f}/${f}.txt`);
+          const text = await r.text();
+          total += countChineseChars(text);
+        } catch (_) {}
+      })
+    );
+    if (statVals[1]) {
+      statVals[1].textContent = total > 0 ? fmtWords(total) : '— 万字';
     }
   }
 
