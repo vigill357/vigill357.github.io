@@ -40,6 +40,9 @@
       overflow-x: hidden;
     }
 
+    /* ── 覆盖 main.css 全局网格纹理 ─────────────────── */
+    body::before { display: none; }
+
     /* ════════════════════════════════════════════════
        NAV
     ════════════════════════════════════════════════ */
@@ -154,10 +157,10 @@
 
     .r-splash {
       position: relative;
-      min-height: calc(100vh - 48px);
+      height: calc(100vh - 48px);   /* 精确占满首屏，不溢出 */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     /* 金色几何背景 */
@@ -171,18 +174,18 @@
       position: relative;
       z-index: 2;
       display: grid;
-      grid-template-columns: 1fr 320px;
-      flex: 1;
-      min-height: calc(100vh - 48px);
+      grid-template-columns: 1fr 40%;  /* 插画列加宽至 40% */
+      height: 100%;                    /* 填满扉页高度 */
     }
 
     /* ── 扉页左侧：信息区 ── */
 
     .r-splash-info {
-      padding: 52px 40px 48px 52px;
+      padding: 44px 36px 38px 52px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
     }
 
     .r-eyebrow {
@@ -190,7 +193,7 @@
       font-size: 10px;
       letter-spacing: 0.22em;
       color: var(--gold-dim);
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -204,46 +207,45 @@
 
     .r-ch-num {
       font-family: 'Share Tech Mono', monospace;
-      font-size: 84px;
+      font-size: 64px;               /* 84px → 64px，减少压迫感 */
       line-height: 1;
       color: rgba(196, 154, 46, 0.08);
       letter-spacing: -0.02em;
-      margin-bottom: -12px;
+      margin-bottom: -8px;
       user-select: none;
     }
 
     .r-ch-title {
       font-family: 'Noto Serif SC', serif;
-      font-size: 30px;
+      font-size: 26px;               /* 30px → 26px */
       font-weight: 600;
       color: var(--text);
       letter-spacing: 0.1em;
       line-height: 1.45;
-      margin-bottom: 26px;
+      margin-bottom: 20px;
     }
 
     .r-divider {
       width: 36px;
       height: 1px;
       background: var(--gold-dim);
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       opacity: 0.75;
     }
 
     .r-synopsis {
       font-family: 'Noto Serif SC', serif;
-      font-size: 15px;
-      line-height: 2.1;
+      font-size: 14px;               /* 15px → 14px */
+      line-height: 2.0;
       color: var(--text2);
       max-width: 400px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
     .r-meta-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px 28px;
-      margin-bottom: 44px;
+      gap: 10px 28px;
     }
 
     .r-meta-item { display: flex; flex-direction: column; gap: 5px; }
@@ -297,7 +299,7 @@
       font-size: 15px;
       color: var(--text);
       letter-spacing: 0.55em;
-      padding-left: 0.55em; /* 补偿 letter-spacing 右偏 */
+      padding-left: 0.55em;
     }
 
     /* ── 扉页右侧：插画区 ── */
@@ -307,31 +309,31 @@
       background: rgba(8, 16, 30, 0.35);
       display: flex;
       flex-direction: column;
+      height: 100%;
     }
 
     .r-illus-frame {
       flex: 1;
-      padding: 32px 24px 18px;
+      min-height: 0;                 /* flex 子项必须显式允许收缩 */
+      padding: 28px 24px 16px;
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
     }
 
-    /* 插画图片 */
+    /* 插画图片：铺满列高 */
     .r-illus-img {
       width: 100%;
-      aspect-ratio: 3 / 4;
-      max-height: 400px;
+      height: 100%;
       object-fit: cover;
       border: 1px solid rgba(196, 154, 46, 0.15);
       display: block;
     }
 
-    /* 无插画时的占位 */
+    /* 无插画时的占位：铺满列高 */
     .r-illus-placeholder {
       width: 100%;
-      aspect-ratio: 3 / 4;
-      max-height: 400px;
+      height: 100%;
       border: 1px solid rgba(196, 154, 46, 0.13);
       background: linear-gradient(160deg, #111e30 0%, #0a1422 55%, #0e1a28 100%);
       position: relative;
@@ -381,10 +383,10 @@
 
     /* 插画说明 */
     .r-illus-caption {
-      padding: 15px 24px;
+      padding: 14px 24px;
       border-top: 1px solid var(--border);
       background: rgba(6, 12, 24, 0.45);
-      min-height: 60px;
+      flex-shrink: 0;
     }
 
     .r-illus-cap-title {
@@ -447,19 +449,7 @@
       background: var(--bg0);
     }
 
-    /* 正文背景网格 */
-    .r-content::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(74,144,217,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(74,144,217,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
-    /* 扫描线 */
+    /* 扫描线（保留，移除网格） */
     .r-content::after {
       content: '';
       position: absolute;
