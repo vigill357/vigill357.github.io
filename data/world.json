@@ -1,0 +1,30 @@
+{
+  "novel": {
+    "title": "《主线小说标题》",
+    "synopsis": "在这里填写主线小说的整体简介。用两三句话描述故事核心、世界背景与主要人物。",
+    "status": "连载中",
+    "genre": "软科幻"
+  },
+
+  "lastUpdate": "2025-06-15",
+
+  "stories": [
+    { "title": "《衍生故事标题》", "status": "完结",  "words": "8,600 字", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
+    { "title": "《衍生故事标题》", "status": "连载中", "chapters": "3 章",  "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" },
+    { "title": "《衍生故事标题》", "status": "完结",  "words": "5,200 字", "excerpt": "描述这篇故事的核心——发生在什么时候，关于谁。" }
+  ],
+
+  "gallery": [
+    { "id": "char-01",    "type": "角色", "label": "角色名 · 肖像" },
+    { "id": "scene-01",   "type": "场景", "label": "场景标题" },
+    { "id": "char-02",    "type": "角色", "label": "角色名 · 肖像" },
+    { "id": "concept-01", "type": "概念", "label": "概念设计" }
+  ],
+
+  "world": {
+    "characters":    12,
+    "locations":      8,
+    "timelineNodes": 24,
+    "rules":         15
+  }
+}

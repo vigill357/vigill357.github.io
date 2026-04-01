@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>无限理想乡 — 创作宇宙</title>
+
+  <!-- 字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400;500&family=Share+Tech+Mono&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- 样式 -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- ═══════════ 几何光标 ═══════════ -->
+  <div id="cursor-container">
+    <svg id="cur-ring" viewBox="0 0 50 50">
+      <g fill="none" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M 25 5 L 19 15 M 25 5 L 31 15" />
+        <path d="M 7 36 L 13 26 M 7 36 L 19 36" />
+        <path d="M 43 36 L 37 26 M 43 36 L 31 36" />
+      </g>
+    </svg>
+    <svg id="cur" viewBox="0 0 50 50">
+      <g fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round">
+        <path d="M 25 36 L 25 26" />
+        <path d="M 16 20.5 L 25 26" />
+        <path d="M 34 20.5 L 25 26" />
+        <circle cx="25" cy="26" r="1" fill="var(--cyan)" stroke="none" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- ═══════════ 导航栏 ═══════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-main">无限理想乡</span>
+      <span class="nav-logo-sub">Creative Universe</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#novel">主线小说</a></li>
+      <li><a href="#stories">衍生故事</a></li>
+      <li><a href="#gallery">插画</a></li>
+      <li><a href="#world">世界观</a></li>
+    </ul>
+    <div class="nav-status">持续连载中</div>
+  </nav>
+
+  <!-- ═══════════ Hero 首屏 ═══════════ -->
+  <div class="hero">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="hero-content">
+      <div class="hero-tag">Creative Universe · 创作宇宙</div>
+      <h1 class="hero-title"><em>无限理想乡</em><br>创作宇宙</h1>
+      <p class="hero-en">[INFINITE UTOPIA]</p>
+      <p class="hero-desc">这是一个拥有着无限接近理想的温柔世界。<br>她带来安定，他带来希望，祂被遗忘在尘封角落。</p>
+      <div class="hero-btns">
+        <a href="#novel" class="btn-a">开始下潜</a>
+        <a href="#world" class="btn-b">探索世界</a>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="panel-row"><span class="panel-key">状态</span><span class="panel-val live">连载中</span></div>
+      <div class="panel-row"><span class="panel-key">主线章节</span><span class="panel-val">— 章</span></div>
+      <div class="panel-row"><span class="panel-key">衍生故事</span><span class="panel-val">— 篇</span></div>
+      <div class="panel-row"><span class="panel-key">插画</span><span class="panel-val">— 幅</span></div>
+      <div class="panel-row"><span class="panel-key">最近更新</span><span class="panel-val">——</span></div>
+    </div>
+
+    <div class="scroll-hint"><div class="scroll-arrow"></div><span>向下探索</span></div>
+  </div>
+
+  <!-- ═══════════ 01 · 主线小说 ═══════════ -->
+  <section id="novel">
+    <div class="sec-head">
+      <span class="sec-label">主线小说</span>
+      <div class="sec-line"></div>
+      <span class="sec-num">01</span>
+    </div>
+    <div class="novel-wrap">
+      <a href="novel.html" class="novel-main">
+        <div class="novel-badge">MAIN</div>
+        <div class="novel-tag">长篇连载</div>
+        <h2 class="novel-title">《主线小说标题》</h2>
+        <p class="novel-desc">在这里填写主线小说简介。用两三句话描述故事核心。</p>
+        <div class="novel-stats">
+          <div class="stat-item"><span class="stat-label">已更新</span><span class="stat-val">— 章</span></div>
+          <div class="stat-item"><span class="stat-label">累计字数</span><span class="stat-val">— 万字</span></div>
+          <div class="stat-item"><span class="stat-label">类型</span><span class="stat-val">软科幻</span></div>
+        </div>
+      </a>
+      <div class="novel-side">
+        <a href="#" class="chapter-item"><div class="ch-title">最新章节 · 章节标题</div><div class="ch-date">更新于 ——</div><span class="ch-arrow">›</span></a>
+        <a href="#" class="chapter-item"><div class="ch-title">上一章节 · 章节标题</div><div class="ch-date">更新于 ——</div><span class="ch-arrow">›</span></a>
+        <a href="#" class="chapter-item" style="background: rgba(37,99,168,.06)"><div class="ch-title">从头开始 · 全部目录</div><div class="ch-date">READ MORE →</div><span class="ch-arrow">›</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 02 · 衍生故事 ═══════════ -->
+  <section id="stories" style="background: rgba(10,21,37,.3)">
+    <div class="sec-head">
+      <span class="sec-label">衍生故事</span>
+      <div class="sec-line"></div>
+      <span class="sec-num">02</span>
+    </div>
+    <div class="stories-grid">
+      <a href="#" class="story-card">
+        <h3 class="story-title">《衍生故事标题》</h3>
+        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
+        <div class="story-meta"><span>完结</span><span>—,— 字</span></div>
+      </a>
+      <a href="#" class="story-card">
+        <h3 class="story-title">《衍生故事标题》</h3>
+        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
+        <div class="story-meta"><span>连载中</span><span>— 章</span></div>
+      </a>
+      <a href="#" class="story-card">
+        <h3 class="story-title">《衍生故事标题》</h3>
+        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
+        <div class="story-meta"><span>完结</span><span>—,— 字</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════ 03 · 插画图鉴 ═══════════ -->
+  <section id="gallery">
+    <div class="sec-head">
+      <span class="sec-label">插画图鉴</span>
+      <div class="sec-line"></div>
+      <span class="sec-num">03</span>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><div class="gallery-frame">角色 · 01</div><span class="gallery-label">角色名 · 肖像</span></div>
+      <div class="gallery-item"><div class="gallery-frame">场景 · 01</div><span class="gallery-label">场景标题</span></div>
+      <div class="gallery-item"><div class="gallery-frame">角色 · 02</div><span class="gallery-label">角色名 · 肖像</span></div>
+      <div class="gallery-item"><div class="gallery-frame">概念 · 01</div><span class="gallery-label">概念设计</span></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 04 · 世界观与设定 ═══════════ -->
+  <section id="world" style="background: rgba(10,21,37,.3)">
+    <div class="sec-head">
+      <span class="sec-label">世界观与设定</span>
+      <div class="sec-line"></div>
+      <span class="sec-num">04</span>
+    </div>
+    <div class="world-grid">
+      <a href="#" class="world-card"><div class="world-icon">[人物]</div><h3 class="world-title">人物图鉴</h3><div class="world-count"><em>—</em> 名角色已收录</div></a>
+      <a href="#" class="world-card"><div class="world-icon">[地图]</div><h3 class="world-title">世界地理</h3><div class="world-count"><em>—</em> 处地点已记录</div></a>
+      <a href="#" class="world-card"><div class="world-icon">[历史]</div><h3 class="world-title">时间线与历史</h3><div class="world-count"><em>—</em> 个时间节点</div></a>
+      <a href="#" class="world-card"><div class="world-icon">[设定]</div><h3 class="world-title">技术与规则</h3><div class="world-count"><em>—</em> 条设定词条</div></a>
+    </div>
+  </section>
+
+  <!-- ═══════════ 页脚 ═══════════ -->
+  <footer>
+    <div class="footer-logo">无限理想乡</div>
+    <div class="footer-info">© 2026 · <em>vigill357</em> · 保留所有权利</div>
+    <div class="footer-info">最近更新 · <em>——</em></div>
+  </footer>
+
+  <!-- 脚本：按依赖顺序加载 -->
+  <script src="js/cursor.js"></script>
+  <script src="js/loader.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
