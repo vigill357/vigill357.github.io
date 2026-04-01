@@ -310,9 +310,9 @@
       }
 
       /** 渲染单张章节卡片 */
-      function renderCard(meta, index, wordCount) {
+      function renderCard(meta, index, wordCount, folder) {
         const card = document.createElement('a');
-        card.href      = `reader.html?ch=${folders[index]}`; // 未来指向阅读器
+        card.href      = `reader.html?ch=${folder || ''}`; // 未来指向阅读器
         card.className = 'ch-card';
         card.id        = `ch${index + 1}`;
 
@@ -392,7 +392,7 @@
         const list = document.getElementById('chapter-list');
         list.innerHTML = '';
         const cards = metas.map((meta, i) => {
-          const card = renderCard(meta, i, null);
+          const card = renderCard(meta, i, null, folders[i]);
           list.appendChild(card);
           return card;
         });
