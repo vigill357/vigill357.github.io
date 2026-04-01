@@ -356,10 +356,7 @@
             document.getElementById('stat-status').textContent    = n.status  || '——';
             document.getElementById('stat-genre').textContent     = n.genre   || '——';
           }
-          if (world.lastUpdate) {
-            document.getElementById('footer-update').innerHTML =
-              `最近更新 · <em>${world.lastUpdate}</em>`;
-          }
+
         } catch (_) {}
 
         // 2. 读章节索引
