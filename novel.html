@@ -224,7 +224,7 @@
       <span class="nav-logo-sub">Creative Universe</span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html#novel">主线小说</a></li>
+      <li><a href="index.html">深度重置</a></li>
       <li><a href="index.html#stories">衍生故事</a></li>
       <li><a href="index.html#gallery">插画</a></li>
       <li><a href="index.html#world">世界观</a></li>
@@ -286,7 +286,7 @@
     <div class="footer-info">© 2026 · <em>vigill357</em> · 保留所有权利</div>
     <div class="footer-info" id="footer-update">最近更新 · <em>——</em></div>
   </footer>
-  
+
   <!-- ═══════════ 脚本 ═══════════ -->
   <script src="js/cursor.js"></script>
   <script>
@@ -388,6 +388,8 @@
         const latestDate = [...metas]
           .sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0]?.date || '——';
         document.getElementById('stat-update').textContent = latestDate;
+        document.getElementById('footer-update').innerHTML =
+          `最近更新 · <em>${latestDate}</em>`;
 
         // 4. 渲染卡片（先不带字数）
         const list = document.getElementById('chapter-list');
