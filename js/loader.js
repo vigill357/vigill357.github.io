@@ -86,6 +86,38 @@ const Loader = (() => {
   }
 
   /**
+   * 用 world.json 的 stories 数组渲染衍生故事卡片
+   */
+  async function loadStoryCards() {
+    try {
+      const res  = await fetch('data/world.json');
+      const data = await res.json();
+      if (!data.stories || !data.stories.length) return;
+
+      const grid = document.querySelector('.stories-grid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+      data.stories.forEach(story => {
+        const meta = story.status === '完结'
+          ? `<span>${story.status}</span><span>${story.words || ''}</span>`
+          : `<span>${story.status}</span><span>${story.chapters || ''}</span>`;
+
+        const a = document.createElement('a');
+        a.href      = story.href || '#';
+        a.className = 'story-card';
+        a.innerHTML = `
+          <h3 class="story-title">${story.title}</h3>
+          <p class="story-excerpt">${story.excerpt || '暂无简介。'}</p>
+          <div class="story-meta">${meta}</div>`;
+        grid.appendChild(a);
+      });
+    } catch (err) {
+      // 静默失败，保持占位内容
+    }
+  }
+
+  /**
    * 加载世界观卡片计数
    */
   async function loadWorldCards() {
@@ -116,6 +148,7 @@ const Loader = (() => {
   /** 初始化 */
   function init() {
     loadChapterList();
+    loadStoryCards();
     loadWorldCards();
   }
 
