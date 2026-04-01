@@ -312,7 +312,7 @@
       /** 渲染单张章节卡片 */
       function renderCard(meta, index, wordCount) {
         const card = document.createElement('a');
-        card.href      = '#'; // 未来指向阅读器
+        card.href      = `reader.html?ch=${folders[index]}`; // 未来指向阅读器
         card.className = 'ch-card';
         card.id        = `ch${index + 1}`;
 

@@ -43,7 +43,7 @@ const Loader = (() => {
 
       [...metas].map((meta, i) => ({ meta, i })).reverse().forEach(({ meta, i }) => {
         const a = document.createElement('a');
-        a.href      = 'novel.html';
+        a.href      = `reader.html?ch=${folders[i]}`;
         a.className = 'chapter-item';
         a.innerHTML = `
           <div class="ch-title">${meta.title || folders[i]}</div>
