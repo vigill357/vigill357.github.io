@@ -52,6 +52,9 @@ const Loader = (() => {
         scrollWrap.appendChild(a);
       });
 
+      const filler = document.createElement('div');
+      filler.style.cssText = 'flex:1; background:var(--bg1);';
+      scrollWrap.appendChild(filler);
       side.appendChild(scrollWrap);
 
       // 底部固定：全部目录
