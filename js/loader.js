@@ -133,29 +133,51 @@ const Loader = (() => {
    */
   async function loadStoryCards() {
     try {
-      const res  = await fetch('data/world.json');
-      const data = await res.json();
-      if (!data.stories?.length) return;
+      const idxRes = await fetch('data/side_stories/index.json');
+      const folders = await idxRes.json();
+
+      // 并行拉取所有 meta + txt
+      const items = await Promise.all(
+        folders.map(async f => {
+          const meta = await fetch(`data/side_stories/${f}/meta.json`)
+            .then(r => r.json())
+            .catch(() => ({ title: f, synopsis: '', date: '' }));
+
+          const words = await fetch(`data/side_stories/${f}/${f}.txt`)
+            .then(r => r.text())
+            .then(t => countChineseChars(t))
+            .catch(() => 0);
+
+          return { folder: f, meta, words };
+        })
+      );
+
+      // 按 date 降序，取前三
+      const top3 = [...items]
+        .sort((a, b) => (b.meta.date || '').localeCompare(a.meta.date || ''))
+        .slice(0, 3);
 
       const grid = document.querySelector('.stories-grid');
       if (!grid) return;
 
       grid.innerHTML = '';
-      data.stories.forEach(story => {
-        const meta = story.status === '完结'
-          ? `<span>${story.status}</span><span>${story.words || ''}</span>`
-          : `<span>${story.status}</span><span>${story.chapters || ''}</span>`;
-
+      top3.forEach(({ folder, meta, words }) => {
         const a = document.createElement('a');
-        a.href      = story.href || '#';
+        a.href = `reader.html?type=side&ch=${folder}`;
         a.className = 'story-card';
         a.innerHTML = `
-          <h3 class="story-title">${story.title}</h3>
-          <p class="story-excerpt">${story.excerpt || '暂无简介。'}</p>
-          <div class="story-meta">${meta}</div>`;
+          <h3 class="story-title">${meta.title || folder}</h3>
+          <p class="story-excerpt">${meta.synopsis || '暂无简介。'}</p>
+          <div class="story-meta">
+            <span>${meta.date || '——'}</span>
+            <span>${words > 0 ? fmtWords(words) : '——'}</span>
+          </div>`;
         grid.appendChild(a);
       });
-    } catch (_) {}
+
+    } catch (err) {
+      console.warn('[Loader] 无法加载衍生故事', err);
+    }
   }
 
   /**
