@@ -70,6 +70,15 @@
       background: rgba(91,200,232,0.04);
     }
     html[data-theme="side"] .r-illus-tag  { color: rgba(91,200,232,0.3); }
+
+    /* 番外模式：深潜按钮 hover 用青色荧光，区别于主线金色 */
+    html[data-theme="side"] .r-dive-btn:hover {
+      background: rgba(91,200,232,0.12);
+      border-color: rgba(91,200,232,0.5);
+      box-shadow: 0 0 14px rgba(91,200,232,0.18), inset 0 0 8px rgba(91,200,232,0.06);
+    }
+    html[data-theme="side"] .r-dive-btn:hover::after { transform: scaleX(1); }
+    html[data-theme="side"] .r-dive-btn::after { background: #7EE4F8; box-shadow: 0 0 6px rgba(126,228,248,0.7); }
     html[data-theme="side"] .r-sep-gem    { border-color: rgba(91,200,232,0.3); box-shadow: 0 0 5px rgba(91,200,232,0.15); }
     html[data-theme="side"] .mk-p         { color: #B0CDE4; }
 
@@ -1009,7 +1018,8 @@
         // 导航文案适配（type=side）
         if (isSide) {
           document.getElementById('r-eyebrow-label').textContent = 'SIDE STORY · LOG';
-          document.getElementById('nav-anchor').textContent = '浅渊残响';
+          document.getElementById('nav-anchor').querySelector('.r-nav-cmd-zh').textContent = '返回锚点';
+          document.getElementById('nav-anchor').querySelector('.r-nav-cmd-en').textContent = 'RETURN';
           document.getElementById('nav-anchor').href = 'stories.html';
           document.getElementById('nav-up').querySelector('.r-nav-cmd-zh').textContent   = '上一篇';
           document.getElementById('nav-down').querySelector('.r-nav-cmd-zh').textContent = '下一篇';

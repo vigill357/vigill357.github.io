@@ -14,10 +14,13 @@
   <style>
     /* ── 当前页导航高亮 ── */
     .nav-active {
-      color: var(--cyan) !important;
+      color: #9EF0FF !important;
+      text-shadow: 0 0 10px rgba(126,228,248,0.7), 0 0 20px rgba(91,200,232,0.35);
     }
     .nav-active::after {
       transform: scaleX(1) !important;
+      background: #9EF0FF !important;
+      box-shadow: 0 0 6px rgba(158,240,255,0.8) !important;
     }
 
     /* ── Hero ── */
@@ -82,9 +85,11 @@
       transition: all 0.2s;
     }
     .sort-btn.active {
-      border-color: rgba(91, 200, 232, 0.35);
-      background: rgba(91, 200, 232, 0.06);
-      color: var(--cyan);
+      border-color: rgba(158, 240, 255, 0.55);
+      background: rgba(91, 200, 232, 0.10);
+      color: #9EF0FF;
+      box-shadow: 0 0 8px rgba(126,228,248,0.2), inset 0 0 6px rgba(91,200,232,0.06);
+      text-shadow: 0 0 8px rgba(158,240,255,0.6);
     }
     .sort-btn:hover:not(.active) {
       color: var(--text2);
@@ -153,7 +158,8 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: #A8E8FF;
+      background: #9EF0FF;
+      box-shadow: 0 0 8px rgba(158,240,255,0.8), 0 0 16px rgba(91,200,232,0.4);
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,7 +172,8 @@
     }
     .story-card-full:hover .scf-arrow {
       transform: translateX(4px);
-      color: #A8E8FF;
+      color: #9EF0FF;
+      text-shadow: 0 0 8px rgba(158,240,255,0.8);
     }
 
     .scf-num {
