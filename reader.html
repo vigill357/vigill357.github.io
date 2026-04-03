@@ -29,6 +29,50 @@
       --nav-h:     52px;
     }
 
+    /* 番外主题：type=side 时由 JS 动态挂载到 <html> */
+    html[data-theme="side"] {
+      --gold:      #5BC8E8;
+      --gold-lt:   #90DCEF;
+      --gold-dim:  rgba(91,200,232,0.5);
+      --gold-bg:   rgba(91,200,232,0.07);
+      --gold-line: rgba(91,200,232,0.22);
+      --bg0:       #091520;
+      --bg1:       #0D1E2E;
+      --text:      #C4DCF0;
+      --text2:     #8AAEC8;
+      --text3:     #4E7A9A;
+      --border:    rgba(91,200,232,0.13);
+      --cyan:      #5BC8E8;
+    }
+
+    html[data-theme="side"] .r-splash::before {
+      content: '';
+      position: absolute;
+      top: -10%; left: 15%;
+      width: 55%; height: 55%;
+      background: radial-gradient(ellipse, rgba(91,200,232,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    html[data-theme="side"] .r-illus-placeholder {
+      background: linear-gradient(175deg, #0D1E2E 0%, #091520 55%, #060F18 100%);
+      border-color: rgba(91,200,232,0.15);
+    }
+    html[data-theme="side"] .r-illus-placeholder::before {
+      background: radial-gradient(ellipse at 50% 100%, rgba(91,200,232,0.08) 0%, transparent 65%);
+    }
+    html[data-theme="side"] .r-illus-gem-outer {
+      border-color: rgba(91,200,232,0.18);
+      box-shadow: 0 0 12px rgba(91,200,232,0.08);
+    }
+    html[data-theme="side"] .r-illus-gem-inner {
+      border-color: rgba(91,200,232,0.28);
+      background: rgba(91,200,232,0.04);
+    }
+    html[data-theme="side"] .r-illus-tag  { color: rgba(91,200,232,0.3); }
+    html[data-theme="side"] .r-sep-gem    { border-color: rgba(91,200,232,0.3); box-shadow: 0 0 5px rgba(91,200,232,0.15); }
+    html[data-theme="side"] .mk-p         { color: #B0CDE4; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
@@ -692,7 +736,7 @@
       <!-- 左侧信息 -->
       <div class="r-splash-info">
         <div>
-          <div class="r-eyebrow">CHAPTER LOG</div>
+          <div class="r-eyebrow"><span id="r-eyebrow-label">CHAPTER LOG</span></div>
           <div class="r-ch-num" id="sp-num">—</div>
           <div class="r-ch-title" id="sp-title">—</div>
           <div class="r-divider"></div>
@@ -742,7 +786,7 @@
 
     <div class="r-footer">
       <a class="r-footer-btn prev disabled" id="foot-prev">
-        <span class="r-fb-label">↑ 深度上升 · ASCEND</span>
+        <span class="r-fb-label" id="foot-prev-label">↑ 深度上升 · ASCEND</span>
         <span class="r-fb-title" id="foot-prev-title">—</span>
       </a>
       <div class="r-footer-center">
@@ -750,7 +794,7 @@
         <div class="r-fc-pos" id="foot-pos">— / —</div>
       </div>
       <a class="r-footer-btn next disabled" id="foot-next">
-        <span class="r-fb-label">深度下降 · DESCEND ↓</span>
+        <span class="r-fb-label" id="foot-next-label">深度下降 · DESCEND ↓</span>
         <span class="r-fb-title" id="foot-next-title">—</span>
       </a>
     </div>
@@ -762,8 +806,6 @@
   <script src="js/markup.js"></script>
   <script>
   (() => {
-    const ROOT = 'data/main_stories/';
-
     /* ── 工具函数 ── */
 
     function getParam(key) {
@@ -791,14 +833,14 @@
 
     /* ── 插画渲染 ── */
 
-    function renderIllus(folder, meta) {
+    function renderIllus(folder, meta, root) {
       const frame = document.getElementById('illus-frame');
 
       if (meta.illus) {
         const img = document.createElement('img');
         img.className = 'r-illus-img';
         img.alt = meta.illusCaption || meta.title || '';
-        img.src = `${ROOT}${folder}/${meta.illus}`;
+        img.src = `${root}${folder}/${meta.illus}`;
         img.onerror = () => { img.replaceWith(makePlaceholder(folder)); };
         frame.appendChild(img);
       } else {
@@ -827,47 +869,55 @@
       return div;
     }
 
-    /* ── 导航 ── */
+    /* ── 顶部导航 ── */
 
-    function setupNav(folders, idx) {
-      const total = folders.length;
-      const pos   = idx + 1;
+    function setupNav(folders, idx, isSide) {
+      const total     = folders.length;
+      const pos       = idx + 1;
+      const typeParam = isSide ? '&type=side' : '';
+      const prefix    = isSide ? 'ST' : 'CH';
 
       document.getElementById('prog-fill').style.width  = `${(pos / total) * 100}%`;
-      document.getElementById('prog-label').textContent = `CH.${zeroPad(pos)} / ${zeroPad(total)}`;
+      document.getElementById('prog-label').textContent = `${prefix}.${zeroPad(pos)} / ${zeroPad(total)}`;
 
       const navUp   = document.getElementById('nav-up');
       const navDown = document.getElementById('nav-down');
 
       if (idx > 0) {
         navUp.classList.remove('disabled');
-        navUp.href = `reader.html?ch=${folders[idx - 1]}`;
+        navUp.href = `reader.html?ch=${folders[idx - 1]}${typeParam}`;
       }
       if (idx < total - 1) {
         navDown.classList.remove('disabled');
-        navDown.href = `reader.html?ch=${folders[idx + 1]}`;
+        navDown.href = `reader.html?ch=${folders[idx + 1]}${typeParam}`;
       }
     }
 
     /* ── 底部导航 ── */
 
-    async function setupFooter(folders, idx) {
-      const total = folders.length;
+    async function setupFooter(folders, idx, isSide, ROOT_CURRENT) {
+      const total     = folders.length;
+      const typeParam = isSide ? '&type=side' : '';
 
       document.getElementById('foot-pos').textContent =
         `${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+
+      if (isSide) {
+        document.getElementById('foot-prev-label').textContent = '↑ 上一篇';
+        document.getElementById('foot-next-label').textContent = '下一篇 ↓';
+      }
 
       if (idx > 0) {
         const pf = folders[idx - 1];
         let pTitle = pf;
         try {
-          const r = await fetch(`${ROOT}${pf}/meta.json`);
+          const r = await fetch(`${ROOT_CURRENT}${pf}/meta.json`);
           const m = await r.json();
           pTitle = m.title || pf;
         } catch (_) {}
         const btn = document.getElementById('foot-prev');
         btn.classList.remove('disabled');
-        btn.href = `reader.html?ch=${pf}`;
+        btn.href = `reader.html?ch=${pf}${typeParam}`;
         document.getElementById('foot-prev-title').textContent = pTitle;
       }
 
@@ -875,13 +925,13 @@
         const nf = folders[idx + 1];
         let nTitle = nf;
         try {
-          const r = await fetch(`${ROOT}${nf}/meta.json`);
+          const r = await fetch(`${ROOT_CURRENT}${nf}/meta.json`);
           const m = await r.json();
           nTitle = m.title || nf;
         } catch (_) {}
         const btn = document.getElementById('foot-next');
         btn.classList.remove('disabled');
-        btn.href = `reader.html?ch=${nf}`;
+        btn.href = `reader.html?ch=${nf}${typeParam}`;
         document.getElementById('foot-next-title').textContent = nTitle;
       }
     }
@@ -892,20 +942,13 @@
       const overlay = document.getElementById('dive-overlay');
       const content = document.getElementById('r-content');
 
-      // Phase 1：覆幕淡入（420ms）
       overlay.classList.remove('exit');
       overlay.classList.add('active');
 
       setTimeout(() => {
-        // Phase 2：瞬移到正文（覆幕遮挡中）
         content.scrollIntoView({ behavior: 'instant' });
-
-        // Phase 3：覆幕淡出（520ms）
         overlay.classList.add('exit');
-        setTimeout(() => {
-          overlay.classList.remove('active', 'exit');
-        }, 540);
-
+        setTimeout(() => { overlay.classList.remove('active', 'exit'); }, 540);
       }, 420);
     };
 
@@ -927,7 +970,15 @@
     /* ── 主加载流程 ── */
 
     async function init() {
-      const folder = getParam('ch');
+      const folder  = getParam('ch');
+      const isSide  = getParam('type') === 'side';
+
+      // 主题切换
+      if (isSide) {
+        document.documentElement.setAttribute('data-theme', 'side');
+      }
+
+      const ROOT_CURRENT = isSide ? 'data/side_stories/' : 'data/main_stories/';
 
       if (!folder) {
         showError('未指定章节参数 (?ch=ch1)');
@@ -935,7 +986,7 @@
       }
 
       try {
-        const idxRes  = await fetch(`${ROOT}index.json`);
+        const idxRes  = await fetch(ROOT_CURRENT + 'index.json');
         const folders = await idxRes.json();
         const idx     = folders.indexOf(folder);
 
@@ -945,8 +996,8 @@
         }
 
         const [metaRes, txtRes] = await Promise.all([
-          fetch(`${ROOT}${folder}/meta.json`),
-          fetch(`${ROOT}${folder}/${folder}.txt`)
+          fetch(`${ROOT_CURRENT}${folder}/meta.json`),
+          fetch(`${ROOT_CURRENT}${folder}/${folder}.txt`)
         ]);
 
         const meta      = await metaRes.json();
@@ -954,6 +1005,15 @@
         const wordCount = countChars(txt);
 
         document.title = `${meta.title || folder} · 无限理想乡`;
+
+        // 导航文案适配（type=side）
+        if (isSide) {
+          document.getElementById('r-eyebrow-label').textContent = 'SIDE STORY · LOG';
+          document.getElementById('nav-anchor').textContent = '浅渊残响';
+          document.getElementById('nav-anchor').href = 'stories.html';
+          document.getElementById('nav-up').querySelector('.r-nav-cmd-zh').textContent   = '上一篇';
+          document.getElementById('nav-down').querySelector('.r-nav-cmd-zh').textContent = '下一篇';
+        }
 
         // 填充扉页
         const numStr = zeroPad(idx + 1);
@@ -963,19 +1023,19 @@
 
         document.getElementById('sp-meta').innerHTML =
           metaItem('WORDS',  fmtWords(wordCount)) +
-          metaItem('DATE',   meta.date    || '—') +
-          metaItem('STATUS', '连载中') +
-          (meta.arc ? metaItem('ARC', meta.arc) : '');
+          metaItem('DATE',   meta.date || '—') +
+          metaItem('STATUS', isSide ? '完结' : '连载中') +
+          (!isSide && meta.arc ? metaItem('ARC', meta.arc) : '');
 
-        renderIllus(folder, meta);
+        renderIllus(folder, meta, ROOT_CURRENT);
 
         // 填充正文
-        document.getElementById('ct-num').textContent    = `// ${numStr}`;
+        document.getElementById('ct-num').textContent    = `// ${isSide ? 'SIDE' : 'CH'} · ${numStr}`;
         document.getElementById('ct-title').textContent  = meta.title || folder;
         document.getElementById('r-text-body').innerHTML = Markup.parse(txt);
 
-        setupNav(folders, idx);
-        await setupFooter(folders, idx);
+        setupNav(folders, idx, isSide);
+        await setupFooter(folders, idx, isSide, ROOT_CURRENT);
 
         // 显示页面
         document.getElementById('r-loading').style.display = 'none';
@@ -985,12 +1045,9 @@
         const splash = document.getElementById('r-splash');
         splash.style.display = '';
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            splash.classList.add('splash-enter');
-          });
+          requestAnimationFrame(() => { splash.classList.add('splash-enter'); });
         });
 
-        // 启动正文入场观察器
         initContentObserver();
 
       } catch (err) {
