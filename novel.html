@@ -28,18 +28,25 @@
 
     /* 标题区 */
     .ph-inner { max-width: 720px; position: relative; }
+    /* ── 导航当前页荧光金色高亮 ── */
+    .nav-active {
+      color: #D4AE52 !important;
+      text-shadow: 0 0 10px rgba(196,154,46,0.7), 0 0 20px rgba(212,174,82,0.3);
+    }
+    .nav-active::after {
+      right: 0 !important;
+      background: #D4AE52 !important;
+      box-shadow: 0 0 6px rgba(196,154,46,0.85) !important;
+    }
+
+    /* 标题区 */
     .ph-label {
       font-family: 'Share Tech Mono', monospace; font-size: 10px;
-      letter-spacing: .35em; color: #D4AE52; margin-bottom: 16px;
+      letter-spacing: .35em; color: var(--cyan); margin-bottom: 16px;
       display: flex; align-items: center; gap: 12px;
-      text-shadow: 0 0 10px rgba(196,154,46,0.65), 0 0 20px rgba(212,174,82,0.3);
       opacity: 0; animation: fadeUp .5s .1s forwards;
     }
-    .ph-label::before {
-      content: ''; display: block; width: 28px; height: 1px;
-      background: #D4AE52;
-      box-shadow: 0 0 6px rgba(196,154,46,0.7);
-    }
+    .ph-label::before { content: ''; display: block; width: 28px; height: 1px; background: var(--cyan); }
 
     .ph-title {
       font-family: 'Noto Serif SC', serif; font-weight: 300;
@@ -49,15 +56,14 @@
     }
     .ph-title em {
       font-style: normal;
-      background: linear-gradient(135deg, #C49A2E, #E8C96A, #D4AE52);
+      background: linear-gradient(135deg, var(--blue3), var(--cyan));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 8px rgba(196,154,46,0.4));
     }
 
     .ph-synopsis {
       font-size: 14px; line-height: 2; color: var(--text2);
       max-width: 580px; margin-bottom: 36px;
-      border-left: 2px solid rgba(196,154,46,0.3); padding-left: 18px;
+      border-left: 2px solid var(--blue0); padding-left: 18px;
       opacity: 0; animation: fadeUp .6s .2s forwards;
     }
 
@@ -73,11 +79,8 @@
     }
     .ph-stat:last-child { border-right: none; }
     .ph-stat-label { font-family: 'Noto Sans SC', sans-serif; font-size: 11px; color: var(--text3); }
-    .ph-stat-val   { font-family: 'Share Tech Mono', monospace; font-size: 18px; color: #D4AE52; }
-    .ph-stat-val.live {
-      color: #E8C96A;
-      text-shadow: 0 0 10px rgba(196,154,46,0.7), 0 0 20px rgba(212,174,82,0.35);
-    }
+    .ph-stat-val   { font-family: 'Share Tech Mono', monospace; font-size: 18px; color: var(--blue3); }
+    .ph-stat-val.live { color: var(--cyan); }
 
     /* ── 章节列表 ── */
     .chapter-section {
@@ -115,9 +118,8 @@
     }
     .ch-num-val {
       font-family: 'Cinzel', serif;
-      font-size: 22px; color: #C49A2E;
+      font-size: 22px; color: var(--blue2);
       line-height: 1;
-      transition: color 0.22s, text-shadow 0.22s;
     }
 
     /* 中部内容 */
@@ -145,13 +147,13 @@
       display: flex; align-items: center; gap: 5px;
     }
     .ch-meta-item em {
-      font-style: normal; color: #C49A2E;
+      font-style: normal; color: var(--blue3);
     }
     .ch-wordcount {
       font-family: 'Share Tech Mono', monospace;
       font-size: 11px; color: var(--text3);
     }
-    .ch-wordcount em { color: #D4AE52; font-style: normal; }
+    .ch-wordcount em { color: var(--cyan); font-style: normal; }
 
     /* 右侧操作 */
     .ch-card-action {
@@ -165,12 +167,9 @@
       font-family: 'Noto Sans SC', sans-serif;
       font-size: 12px; color: var(--text3);
       display: flex; align-items: center; gap: 6px;
-      transition: color .25s, text-shadow .25s;
+      transition: color .2s;
     }
-    .ch-card:hover .ch-read-btn {
-      color: #D4AE52;
-      text-shadow: 0 0 8px rgba(196,154,46,0.65);
-    }
+    .ch-card:hover .ch-read-btn { color: var(--cyan); }
     .ch-read-arrow {
       font-size: 16px; transition: transform .2s;
     }
@@ -209,11 +208,6 @@
     }
     .ch-card:hover::after { transform: scaleX(1); }
 
-    /* hover 时章节号荧光 */
-    .ch-card:hover .ch-num-val {
-      color: #D4AE52;
-      text-shadow: 0 0 10px rgba(196,154,46,0.7);
-    }
   </style>
 </head>
 <body>
@@ -244,7 +238,7 @@
       <span class="nav-logo-sub">Creative Universe</span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">深度重置</a></li>
+      <li><a href="index.html" class="nav-active">深度重置</a></li>
       <li><a href="stories.html">衍生故事</a></li>
       <li><a href="index.html#gallery">插画</a></li>
       <li><a href="index.html#world">世界观</a></li>
