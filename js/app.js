@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── 初始化光标模块 ──
   Cursor.init();
 
+  // ── 初始化 Hero 视差模块 ──
+  HeroParallax.init();
+
   // ── 初始化内容加载模块 ──
   Loader.init();
 });
