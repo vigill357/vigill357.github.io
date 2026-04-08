@@ -506,25 +506,61 @@ body.intro-phase .scroll-hint  { animation: none !important; opacity: 0; }
   transition: none !important;
 }
 
-/* ── Veil：黑色从 Logo 中心向四周褪去 ── */
+/* ── Veil：多层坍塌式褪去（由内向外，有层次感地瓦解） ── */
 @keyframes veilReveal {
   from {
-    /* 起始洞半径 200px —— 刚好覆盖 logo，切换瞬间不遮 logo */
+    /* 初始：logo 中心已透明，向外依次过渡为半透明→全黑，形成有层次的晕染边缘 */
     -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 200px, black 201px);
+      transparent      175px,
+      rgba(0,0,0,.04)  215px,
+      rgba(0,0,0,.20)  285px,
+      rgba(0,0,0,.52)  360px,
+      rgba(0,0,0,.86)  420px,
+      black            460px);
     mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 200px, black 201px);
+      transparent      175px,
+      rgba(0,0,0,.04)  215px,
+      rgba(0,0,0,.20)  285px,
+      rgba(0,0,0,.52)  360px,
+      rgba(0,0,0,.86)  420px,
+      black            460px);
+    opacity: 1;
   }
   to {
+    /* 末态：全透明（软边缘推至屏幕外），叠加 opacity:0 确保边角也干净消散 */
     -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 2800px, black 2800px);
+      transparent      2500px,
+      rgba(0,0,0,.04)  2600px,
+      rgba(0,0,0,.20)  2700px,
+      rgba(0,0,0,.52)  2780px,
+      rgba(0,0,0,.86)  2850px,
+      black            2900px);
     mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 2800px, black 2800px);
+      transparent      2500px,
+      rgba(0,0,0,.04)  2600px,
+      rgba(0,0,0,.20)  2700px,
+      rgba(0,0,0,.52)  2780px,
+      rgba(0,0,0,.86)  2850px,
+      black            2900px);
+    opacity: 0;
   }
 }
 /* fill-mode: both → from 帧在切换瞬间立即生效，logo 始终可见 */
 body.intro-revealed #intro-veil {
-  animation: veilReveal 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: veilReveal 3.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── 点击冲击波环：从 logo 中心向外扩散，可见地标记层次 ── */
+.veil-ring {
+  position: fixed;
+  border-radius: 50%;
+  z-index: 12;
+  pointer-events: none;
+}
+
+@keyframes veilRingExpand {
+  from { transform: translate(-50%,-50%) scale(1);  opacity: 1; }
+  to   { transform: translate(-50%,-50%) scale(22); opacity: 0; }
 }
 
 /* ── Reveal 层次（fill-mode: both 防止延迟期间闪现） ──
