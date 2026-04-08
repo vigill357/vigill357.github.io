@@ -4,7 +4,7 @@
  */
 
 const Intro = (() => {
-  const LOGO_READY_MS = 3300; // Logo 动画完成时间（ms）
+  const LOGO_READY_MS = 4500; // Logo 动画完成时间（ms）
 
   let logoWrap;
   let revealed = false;
@@ -44,6 +44,8 @@ const Intro = (() => {
     setTimeout(() => {
       document.body.classList.remove('intro-phase');
       document.body.classList.add('intro-revealed');
+      // veil 动画结束后移除元素（1.9s + 少量余量）
+      setTimeout(() => document.getElementById('intro-veil')?.remove(), 2200);
     }, 200);
   }
 
