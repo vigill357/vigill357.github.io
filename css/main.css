@@ -459,38 +459,23 @@ footer {
   pointer-events: none;
 }
 
-/* ── intro-phase：仅 logo wrap 浮到 veil 上方，其余全黑 ── */
-body.intro-phase .hero-logo-wrap {
-  position: fixed !important;
-  z-index: 15 !important;
-  left: 50%;
-  top: 50%;
-}
-body.intro-phase .orb1,
-body.intro-phase .orb2,
-body.intro-phase .orb3 {
-  opacity: 0;
-}
-body.intro-phase nav {
-  opacity: 0;
-  pointer-events: none;
-}
+/* ── intro-phase ──
+   hero 整体提升到 veil(z:10) 上方，再逐一隐藏 hero 内所有子元素，
+   只留 hero-logo-wrap 可见 → 纯黑 + 唯一 logo */
+body.intro-phase .hero         { z-index: 15; }
+body.intro-phase .hero::before { opacity: 0; }          /* 右侧竖线 */
+body.intro-phase .orb          { opacity: 0; }          /* 三个光球全隐 */
+body.intro-phase nav           { opacity: 0; pointer-events: none; }
 body.intro-phase section,
-body.intro-phase footer {
-  opacity: 0;
-  pointer-events: none;
-}
-/* 阻止 hero 内容的原生 CSS 动画提前触发 */
+body.intro-phase footer        { opacity: 0; pointer-events: none; }
+/* 阻止 hero 文字内容的原生 CSS 动画提前触发 */
 body.intro-phase .hero-tag,
 body.intro-phase .hero-title,
 body.intro-phase .hero-en,
 body.intro-phase .hero-desc,
 body.intro-phase .hero-btns,
 body.intro-phase .hero-panel,
-body.intro-phase .scroll-hint {
-  animation: none !important;
-  opacity: 0;
-}
+body.intro-phase .scroll-hint  { animation: none !important; opacity: 0; }
 
 /* ── Logo 可交互状态 ── */
 .hero-logo-wrap.logo-ready {
@@ -524,10 +509,11 @@ body.intro-phase .scroll-hint {
 /* ── Veil：黑色从 Logo 中心向四周褪去 ── */
 @keyframes veilReveal {
   from {
+    /* 起始洞半径 200px —— 刚好覆盖 logo，切换瞬间不遮 logo */
     -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 0px, black 0.5px);
+      transparent 200px, black 201px);
     mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
-      transparent 0px, black 0.5px);
+      transparent 200px, black 201px);
   }
   to {
     -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
@@ -536,57 +522,55 @@ body.intro-phase .scroll-hint {
       transparent 2800px, black 2800px);
   }
 }
+/* fill-mode: both → from 帧在切换瞬间立即生效，logo 始终可见 */
 body.intro-revealed #intro-veil {
-  animation: veilReveal 1.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: veilReveal 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Reveal 层次（fill-mode: both 防止延迟期间闪现） ── */
+/* ── Reveal 层次（fill-mode: both 防止延迟期间闪现） ──
+   节奏：veil扩散(0~1.9s) → nav → orb → hero逐行 → panel → 板块逐节 → 页脚 → 提示 */
 
-/* 1. 导航栏：最先滑入 */
+body.intro-revealed .hero::before { opacity: 1; }
+
+/* 1. 导航：洞刚打开就滑入 */
 body.intro-revealed nav {
-  animation: fadeUp 0.6s 0.30s ease both !important;
+  animation: fadeUp 0.55s 0.25s ease both !important;
   pointer-events: auto !important;
 }
 
-/* 2. 右侧两个orb随背景浮现 */
-body.intro-revealed .orb1,
-body.intro-revealed .orb2 {
-  animation: fadeIn 1.4s 0.55s ease both;
+/* 2. 光球随背景浮现 */
+body.intro-revealed .orb {
+  animation: fadeIn 1.2s 0.50s ease both;
 }
 
-/* 3. Hero 文字内容：自上而下错开 */
-body.intro-revealed .hero-tag    { animation: fadeUp .55s 0.45s ease both; }
-body.intro-revealed .hero-title  { animation: fadeUp .65s 0.60s ease both; }
-body.intro-revealed .hero-en     { animation: fadeUp .65s 0.75s ease both; }
-body.intro-revealed .hero-desc   { animation: fadeUp .65s 0.90s ease both; }
-body.intro-revealed .hero-btns   { animation: fadeUp .65s 1.05s ease both; }
+/* 3. Hero 标签/标题逐行，间隔拉宽让层次清晰 */
+body.intro-revealed .hero-tag    { animation: fadeUp .5s  0.55s ease both; }
+body.intro-revealed .hero-title  { animation: fadeUp .6s  0.75s ease both; }
+body.intro-revealed .hero-en     { animation: fadeUp .6s  0.95s ease both; }
+body.intro-revealed .hero-desc   { animation: fadeUp .6s  1.15s ease both; }
+body.intro-revealed .hero-btns   { animation: fadeUp .6s  1.35s ease both; }
 
-/* 4. 右侧信息面板：文字完成后滑入 */
-body.intro-revealed .hero-panel  { animation: fadeLeft .75s 1.20s ease both; }
+/* 4. 信息面板：文字全部就绪后才滑入 */
+body.intro-revealed .hero-panel  { animation: fadeLeft .7s 1.55s ease both; }
 
-/* 5. 各内容板块：依次从上往下 */
+/* 5. 向下提示 */
+body.intro-revealed .scroll-hint { animation: fadeIn .7s  1.80s ease both; }
+
+/* 6. 内容板块：每节错开 0.2s，用 fadeUp 增加纵深感 */
 body.intro-revealed section:nth-of-type(1) {
-  animation: fadeIn .7s 0.60s ease both;
-  pointer-events: auto !important;
+  animation: fadeUp .65s 0.65s ease both; pointer-events: auto !important;
 }
 body.intro-revealed section:nth-of-type(2) {
-  animation: fadeIn .7s 0.78s ease both;
-  pointer-events: auto !important;
+  animation: fadeUp .65s 0.85s ease both; pointer-events: auto !important;
 }
 body.intro-revealed section:nth-of-type(3) {
-  animation: fadeIn .7s 0.96s ease both;
-  pointer-events: auto !important;
+  animation: fadeUp .65s 1.05s ease both; pointer-events: auto !important;
 }
 body.intro-revealed section:nth-of-type(4) {
-  animation: fadeIn .7s 1.14s ease both;
-  pointer-events: auto !important;
+  animation: fadeUp .65s 1.25s ease both; pointer-events: auto !important;
 }
 
-/* 6. 页脚最后 */
+/* 7. 页脚压轴 */
 body.intro-revealed footer {
-  animation: fadeIn .7s 1.30s ease both;
-  pointer-events: auto !important;
+  animation: fadeIn .6s 1.45s ease both; pointer-events: auto !important;
 }
-
-/* 7. 向下提示：最末尾 */
-body.intro-revealed .scroll-hint { animation: fadeIn .8s 1.55s ease both; }
