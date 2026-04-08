@@ -5,6 +5,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ── 初始化开场动画（优先，立即锁定全黑状态）──
+  Intro.init();
+
   // ── 导航锚点平滑滚动 ──
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
