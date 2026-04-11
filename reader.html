@@ -412,10 +412,12 @@
     .r-illus-frame {
       flex: 1;
       min-height: 0;
+      max-height: calc(100vh - var(--nav-h) - 80px);
       padding: 28px 24px 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
     /* 插画图片：等比缩放，保持原始比例 */
