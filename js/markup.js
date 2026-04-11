@@ -32,7 +32,7 @@ const Markup = (() => {
     /* 正文段落 */
     .mk-p {
       font-family: 'Noto Serif SC', serif;
-      font-size: 17px;
+      font-size: 19px;
       line-height: 2.15;
       color: #C0D4E8;
       margin: 0;
