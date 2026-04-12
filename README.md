@@ -24,6 +24,8 @@ vigill357.github.io/
 ├── js/
 │   ├── app.js                   # 主入口脚本
 │   ├── cursor.js                # 几何光标模块
+│   ├── hero.js                  # Hero 首屏视差模块
+│   ├── intro.js                 # 开场动画模块
 │   ├── loader.js                # 内容加载与数据同步模块
 │   ├── markup.js                # 自定义标记语言解析器
 │   └── stories.js               # 衍生故事子页面逻辑模块
@@ -184,12 +186,38 @@ vigill357.github.io/
 
 ---
 
+### `js/hero.js` — Hero 首屏视差模块
+
+封装为 IIFE 模块 `HeroParallax`，对外暴露 `init()` 方法，负责首屏区域的多层鼠标视差效果：
+
+- **Logo 多层视差**：监听 `mousemove`，将 SVG Logo 拆分为五个独立图层（旋转外环、底层光晕、外圈、中圈、核心），以不同插值系数（`0.074`）跟踪鼠标偏移，形成视差深度层次感。
+- **Hero 元素浮动**：`hero-content` 与 `hero-panel` 跟随鼠标以更平滑的插值系数（`0.048`）微位移，`panel` 偏移量略大以增强层次感。
+- **归位动画**：鼠标离开时所有目标值重置为 `0`，各层自然插值回初始位置。
+
+---
+
+### `js/intro.js` — 开场动画模块
+
+封装为 IIFE 模块 `Intro`，对外暴露 `init()` 方法，控制网站首次进入时的开场流程：
+
+| 阶段 | 说明 |
+|------|------|
+| 黑屏 | `init()` 立即在 `<body>` 挂载 `intro-phase`，全屏黑幕遮盖内容 |
+| Logo 就绪 | ~4.5 秒后 Logo 动画完成，切换为可交互状态（`logo-ready`） |
+| 悬停 | 鼠标悬停 Logo 触发浮起效果，光标环放大 |
+| 点击 Reveal | 点击 Logo 后发射多层冲击波环（`veil-ring`），延迟 200ms 后移除 `intro-phase`、挂载 `intro-revealed`，全站内容淡出浮现 |
+
+冲击波环共四层，延迟与持续时间依次递增，产生向外扩散的层次效果。3.6 秒后 `#intro-veil` 元素自动从 DOM 移除。
+
+---
+
 ### `js/app.js` — 主入口脚本
 
-在 `DOMContentLoaded` 事件后执行：
+在 `DOMContentLoaded` 事件后按序执行：
 
-1. **导航平滑滚动**：拦截所有 `href` 以 `#` 开头的锚点链接，改用 `scrollIntoView({ behavior: 'smooth' })` 平滑滚动。
-2. **模块初始化调度**：依序调用 `Cursor.init()` 与 `Loader.init()`，启动光标系统与数据加载。
+1. **开场动画**：优先调用 `Intro.init()`，立即锁定全黑状态，防止内容闪现。
+2. **导航平滑滚动**：拦截所有 `href` 以 `#` 开头的锚点链接，改用 `scrollIntoView({ behavior: 'smooth' })` 平滑滚动。
+3. **模块初始化调度**：依序调用 `Cursor.init()`、`HeroParallax.init()`、`Loader.init()`，启动光标系统、视差效果与数据加载。
 
 ---
 
