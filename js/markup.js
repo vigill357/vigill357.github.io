@@ -111,7 +111,7 @@ const Markup = (() => {
     /* 叙事旁白 */
     .mk-aside {
       font-family: 'Noto Serif SC', serif;
-      font-size: 13.5px;
+      font-size: 15.5px;
       color: #7090B0;
       font-style: italic;
       text-align: right;
