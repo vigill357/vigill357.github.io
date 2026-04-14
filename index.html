@@ -5,18 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>无限理想乡 — 创作宇宙</title>
 
-  <!-- 字体 -->
+  <!-- 字体资源 -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400;500&family=Share+Tech+Mono&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- 样式 -->
+  <!-- 核心样式表 -->
   <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
 
-  <!-- 开场黑色遮罩：由 intro.js 控制褪去 -->
+<!-- 直接在 body 上预设 intro-phase，由 CSS 立即锁定黑屏状态 -->
+<body class="intro-phase">
+
+  <!-- ═══════════ 开场遮罩 ═══════════ -->
+  <!-- z-index: 1000 (由 main.css 定义) -->
   <div id="intro-veil"></div>
 
   <!-- ═══════════ 几何光标 ═══════════ -->
+  <!-- z-index: 9999 (始终位于最前方) -->
   <div id="cursor-container">
     <svg id="cur-ring" viewBox="0 0 50 50">
       <g fill="none" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round">
@@ -52,14 +56,16 @@
 
   <!-- ═══════════ Hero 首屏 ═══════════ -->
   <div class="hero">
+    <!-- 背景装饰光球 -->
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
     <div class="orb orb3"></div>
 
-    <!-- Logo 动画：首先播放，完成后其余内容淡入 -->
+    <!-- 核心 Logo 容器：z-index 需高于遮罩以保持可见 -->
     <div class="hero-logo-wrap" id="heroLogoWrap">
       <svg id="heroLogoSvg" viewBox="0 0 200 242" width="340" height="411"
         xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+        <!-- 此处保留你原本复杂的 Logo SVG 内容 -->
         <defs>
           <clipPath id="hl-nw-cut">
             <polygon points="104,-50 300,-50 300,300 -50,300 -50,109 104,109" />
@@ -91,21 +97,11 @@
 
         <g id="hlSpin">
           <g class="spin">
-            <path id="hlid" class="neon"
-              d="M100,75 L130,105 L100,135 L70,105 Z"
-              fill="url(#hl-pb)" stroke="#00CCFF" stroke-width="1.15"/>
-            <g class="ctri" style="animation-delay:1.70s">
-              <polyline class="gpulse-dark" points="94,85 100,79 106,85" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/>
-            </g>
-            <g class="ctri" style="animation-delay:1.76s">
-              <polyline class="gpulse-dark" points="120,99 126,105 120,111" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/>
-            </g>
-            <g class="ctri" style="animation-delay:1.82s">
-              <polyline class="gpulse-dark" points="106,125 100,131 94,125" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/>
-            </g>
-            <g class="ctri" style="animation-delay:1.88s">
-              <polyline class="gpulse-dark" points="80,111 74,105 80,99" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/>
-            </g>
+            <path id="hlid" class="neon" d="M100,75 L130,105 L100,135 L70,105 Z" fill="url(#hl-pb)" stroke="#00CCFF" stroke-width="1.15"/>
+            <g class="ctri" style="animation-delay:1.70s"><polyline class="gpulse-dark" points="94,85 100,79 106,85" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/></g>
+            <g class="ctri" style="animation-delay:1.76s"><polyline class="gpulse-dark" points="120,99 126,105 120,111" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/></g>
+            <g class="ctri" style="animation-delay:1.82s"><polyline class="gpulse-dark" points="106,125 100,131 94,125" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/></g>
+            <g class="ctri" style="animation-delay:1.88s"><polyline class="gpulse-dark" points="80,111 74,105 80,99" fill="none" stroke="#C59B27" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="miter"/></g>
           </g>
         </g>
 
@@ -117,56 +113,29 @@
         </g>
 
         <g id="hlG0">
-          <path id="hlod" class="neon"
-            d="M90,30 L165,105 L100,170 L25,95"
-            fill="none" stroke="#00DDFF" stroke-width="4.2" stroke-linecap="butt"
-            clip-path="url(#hl-nw-cut)"/>
+          <path id="hlod" class="neon" d="M90,30 L165,105 L100,170 L25,95" fill="none" stroke="#00DDFF" stroke-width="4.2" stroke-linecap="butt" clip-path="url(#hl-nw-cut)"/>
         </g>
 
         <g id="hlG1">
           <g class="conn" stroke="#007799" stroke-width=".92" stroke-opacity=".45">
-            <line x1="100" y1="40"  x2="100" y2="58"/>
-            <line x1="165" y1="105" x2="147" y2="105"/>
-            <line x1="100" y1="170" x2="100" y2="152"/>
-            <line x1="35"  y1="105" x2="53"  y2="105"/>
+            <line x1="100" y1="40"  x2="100" y2="58"/><line x1="165" y1="105" x2="147" y2="105"/>
+            <line x1="100" y1="170" x2="100" y2="152"/><line x1="35"  y1="105" x2="53"  y2="105"/>
           </g>
           <path id="hlmd" class="logo-breathe" d="M147,105 L100,152 L53,105 L100,58" fill="none" stroke="#4ABCDE" stroke-width="1.3" stroke-linecap="butt" stroke-opacity="0.8"/>
           <g class="conn" stroke="#4ABCDE" stroke-width="1.0" stroke-opacity=".55" stroke-linecap="butt">
-            <line x1="100" y1="58"  x2="100" y2="70"/>
-            <line x1="147" y1="105" x2="135" y2="105"/>
-          </g>
-        </g>
-
-        <g id="hlG2">
-          <g class="conn" stroke="#005577" stroke-width=".74" stroke-opacity=".35">
-            <line x1="100" y1="58"  x2="100" y2="75"/>
-            <line x1="147" y1="105" x2="130" y2="105"/>
-            <line x1="100" y1="152" x2="100" y2="135"/>
-            <line x1="53"  y1="105" x2="70"  y2="105"/>
-          </g>
-          <g class="conn" stroke="#0088AA" stroke-width=".44" stroke-opacity=".25">
-            <line x1="100" y1="75"  x2="100" y2="87"/>
-            <line x1="130" y1="105" x2="118" y2="105"/>
-            <line x1="100" y1="135" x2="100" y2="123"/>
-            <line x1="70"  y1="105" x2="82"  y2="105"/>
+            <line x1="100" y1="58"  x2="100" y2="70"/><line x1="147" y1="105" x2="135" y2="105"/>
           </g>
         </g>
 
         <g id="hlCore" filter="url(#hl-dropShadow)">
-          <polygon class="gpulse-dark"
-            points="84,114 116,114 100,130"
-            fill="url(#hl-lgBrassCore)"/>
-          <polyline class="core-red-glow" points="84,114 100,130 116,114"
-            fill="none" stroke="#AA3333" stroke-width="2." stroke-opacity="0.8"
-            stroke-linecap="round" stroke-linejoin="miter"
-            transform="scale(0.25)" transform-origin="100 119.5"/>
-          <polygon class="gpulse-dark"
-            points="84,114 116,114 100,130"
-            fill="none" stroke="#A67B27" stroke-width=".85"/>
+          <polygon class="gpulse-dark" points="84,114 116,114 100,130" fill="url(#hl-lgBrassCore)"/>
+          <polyline class="core-red-glow" points="84,114 100,130 116,114" fill="none" stroke="#AA3333" stroke-width="2." stroke-opacity="0.8" stroke-linecap="round" stroke-linejoin="miter" transform="scale(0.25)" transform-origin="100 119.5"/>
+          <polygon class="gpulse-dark" points="84,114 116,114 100,130" fill="none" stroke="#A67B27" stroke-width=".85"/>
         </g>
       </svg>
     </div>
 
+    <!-- 文本内容容器 -->
     <div class="hero-content">
       <div class="hero-tag">Creative Universe · 创作宇宙</div>
       <h1 class="hero-title"><em>无限理想乡</em><br>创作宇宙</h1>
@@ -178,6 +147,7 @@
       </div>
     </div>
 
+    <!-- 信息面板 -->
     <div class="hero-panel">
       <div class="panel-row"><span class="panel-key">状态</span><span class="panel-val live">连载中</span></div>
       <div class="panel-row"><span class="panel-key">主线章节</span><span class="panel-val">— 章</span></div>
@@ -186,10 +156,15 @@
       <div class="panel-row"><span class="panel-key">最近更新</span><span class="panel-val">——</span></div>
     </div>
 
-    <div class="scroll-hint"><div class="scroll-arrow"></div><span>向下探索</span></div>
+    <!-- 滚动提示 -->
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+      <span>向下探索</span>
+    </div>
   </div>
 
-  <!-- ═══════════ 01 · 主线小说 ═══════════ -->
+  <!-- ═══════════ 内容板块 ═══════════ -->
+  <!-- 01 · 主线小说 -->
   <section id="novel">
     <div class="sec-head">
       <span class="sec-label">主线小说</span>
@@ -205,47 +180,44 @@
         <div class="novel-stats">
           <div class="stat-item"><span class="stat-label">已更新</span><span class="stat-val">— 章</span></div>
           <div class="stat-item"><span class="stat-label">累计字数</span><span class="stat-val">— 万字</span></div>
-          <!-- <div class="stat-item"><span class="stat-label">类型</span><span class="stat-val">软科幻</span></div> -->
         </div>
       </a>
       <div class="novel-side">
         <a href="#" class="chapter-item"><div class="ch-title">最新章节 · 章节标题</div><div class="ch-date">更新于 ——</div><span class="ch-arrow">›</span></a>
         <a href="#" class="chapter-item"><div class="ch-title">上一章节 · 章节标题</div><div class="ch-date">更新于 ——</div><span class="ch-arrow">›</span></a>
-        <a href="#" class="chapter-item" style="background: rgba(37,99,168,.06)"><div class="ch-title">从头开始 · 全部目录</div><div class="ch-date">READ MORE →</div><span class="ch-arrow">›</span></a>
+        <a href="#" class="chapter-item chapter-item--all"><div class="ch-title">从头开始 · 全部目录</div><div class="ch-date">READ MORE →</div><span class="ch-arrow">›</span></a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ 02 · 衍生故事 ═══════════ -->
+  <!-- 02 · 衍生故事 -->
   <section id="stories" style="background: rgba(10,21,37,.3)">
     <div class="sec-head">
       <span class="sec-label">衍生故事</span>
       <div class="sec-line"></div>
-      <span class="sec-num">
-        02
-        <a href="stories.html" class="sec-more">更多</a>
-      </span>
+      <span class="sec-num">02 <a href="stories.html" class="sec-more">更多</a></span>
     </div>
     <div class="stories-grid">
+      <!-- 示例卡片 -->
       <a href="#" class="story-card">
-        <h3 class="story-title">《衍生故事标题》</h3>
-        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
-        <div class="story-meta"><span>完结</span><span>—,— 字</span></div>
+        <h3 class="story-title">《浅渊残响》</h3>
+        <p class="story-excerpt">在数据遗忘的边缘，听见那些未曾出口的告白。</p>
+        <div class="story-meta"><span>完结</span><span>1.2 万字</span></div>
       </a>
       <a href="#" class="story-card">
-        <h3 class="story-title">《衍生故事标题》</h3>
-        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
-        <div class="story-meta"><span>连载中</span><span>— 章</span></div>
+        <h3 class="story-title">《虚空观测者》</h3>
+        <p class="story-excerpt">如果世界只是一个巨大的模拟，谁在注视着我们？</p>
+        <div class="story-meta"><span>连载中</span><span>5 章</span></div>
       </a>
       <a href="#" class="story-card">
-        <h3 class="story-title">《衍生故事标题》</h3>
-        <p class="story-excerpt">描述这篇故事的核心——发生在什么时候，关于谁。</p>
-        <div class="story-meta"><span>完结</span><span>—,— 字</span></div>
+        <h3 class="story-title">《时之涟漪》</h3>
+        <p class="story-excerpt">关于那个被抹去的夏天，以及重逢的承诺。</p>
+        <div class="story-meta"><span>完结</span><span>0.8 万字</span></div>
       </a>
     </div>
   </section>
 
-  <!-- ═══════════ 03 · 插画图鉴 ═══════════ -->
+  <!-- 03 · 插画图鉴 -->
   <section id="gallery">
     <div class="sec-head">
       <span class="sec-label">插画图鉴</span>
@@ -253,14 +225,14 @@
       <span class="sec-num">03</span>
     </div>
     <div class="gallery-grid">
-      <div class="gallery-item"><div class="gallery-frame">角色 · 01</div><span class="gallery-label">角色名 · 肖像</span></div>
-      <div class="gallery-item"><div class="gallery-frame">场景 · 01</div><span class="gallery-label">场景标题</span></div>
-      <div class="gallery-item"><div class="gallery-frame">角色 · 02</div><span class="gallery-label">角色名 · 肖像</span></div>
-      <div class="gallery-item"><div class="gallery-frame">概念 · 01</div><span class="gallery-label">概念设计</span></div>
+      <div class="gallery-item"><div class="gallery-frame">角色 · 01</div><span class="gallery-label">艾琳娜 · 侧颜</span></div>
+      <div class="gallery-item"><div class="gallery-frame">场景 · 01</div><span class="gallery-label">深渊之底</span></div>
+      <div class="gallery-item"><div class="gallery-frame">角色 · 02</div><span class="gallery-label">观测者 · 肖像</span></div>
+      <div class="gallery-item"><div class="gallery-frame">概念 · 01</div><span class="gallery-label">理想乡全景</span></div>
     </div>
   </section>
 
-  <!-- ═══════════ 04 · 世界观与设定 ═══════════ -->
+  <!-- 04 · 世界观设定 -->
   <section id="world" style="background: rgba(10,21,37,.3)">
     <div class="sec-head">
       <span class="sec-label">世界观与设定</span>
@@ -270,8 +242,8 @@
     <div class="world-grid">
       <a href="#" class="world-card"><div class="world-icon">[人物]</div><h3 class="world-title">人物图鉴</h3><div class="world-count"><em>—</em> 名角色已收录</div></a>
       <a href="#" class="world-card"><div class="world-icon">[地图]</div><h3 class="world-title">世界地理</h3><div class="world-count"><em>—</em> 处地点已记录</div></a>
-      <a href="#" class="world-card"><div class="world-icon">[历史]</div><h3 class="world-title">时间线与历史</h3><div class="world-count"><em>—</em> 个时间节点</div></a>
-      <a href="#" class="world-card"><div class="world-icon">[设定]</div><h3 class="world-title">技术与规则</h3><div class="world-count"><em>—</em> 条设定词条</div></a>
+      <a href="#" class="world-card"><div class="world-icon">[历史]</div><h3 class="world-title">时间线</h3><div class="world-count"><em>—</em> 个关键节点</div></a>
+      <a href="#" class="world-card"><div class="world-icon">[规则]</div><h3 class="world-title">底层代码</h3><div class="world-count"><em>—</em> 条核心设定</div></a>
     </div>
   </section>
 
@@ -282,11 +254,12 @@
     <div class="footer-info">最近更新 · <em>——</em></div>
   </footer>
 
-  <!-- 脚本：按依赖顺序加载 -->
+  <!-- 脚本加载 -->
   <script src="js/cursor.js"></script>
   <script src="js/loader.js"></script>
   <script src="js/hero.js"></script>
   <script src="js/intro.js"></script>
+  <!-- 确保 app.js 中调用了 Intro.init() -->
   <script src="js/app.js"></script>
 
 </body>

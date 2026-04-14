@@ -1,15 +1,28 @@
 /**
- * intro.js — 开场动画模块
- * 流程：黑屏 → Logo 动画（~4.5s）→ Logo 可交互 → 悬浮选中 → 点击 → 内容浮现
+ * intro.js — 增强版开场动画模块
+ * 流程：黑屏阶段 → Logo 准备就绪 → 鼠标视差追踪 → 点击驱动瞳孔转场 → 内容层级式浮现
  */
 
 const Intro = (() => {
-  const LOGO_READY_MS = 4500; // Logo 动画完成时间（ms）
+  // Logo 动画完成并允许交互的时间（ms）
+  const LOGO_READY_MS = 3000; 
 
   let logoWrap;
   let revealed = false;
 
-  // ── Logo 悬停：浮起 + 光标变为选中状态 ──
+  // ── 鼠标视差：Logo 随光标轻微偏移 ──
+  function onMouseMove(e) {
+    if (revealed) return;
+    const { clientX, clientY } = e;
+    // 计算相对于屏幕中心的偏移，除以 40 控制灵敏度
+    const x = (clientX - window.innerWidth / 2) / 40;
+    const y = (clientY - window.innerHeight / 2) / 40;
+    
+    // 应用平滑偏移
+    logoWrap.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }
+
+  // ── Logo 悬停反馈 ──
   function onLogoEnter() {
     logoWrap.classList.add('logo-hovered');
     document.getElementById('cur-ring')?.classList.add('big');
@@ -17,85 +30,88 @@ const Intro = (() => {
 
   function onLogoLeave() {
     logoWrap.classList.remove('logo-hovered');
+    // 离开时回归原位
+    logoWrap.style.transform = `translate3d(0, 0, 0)`;
     document.getElementById('cur-ring')?.classList.remove('big');
   }
 
-  // ── 冲击波环：点击瞬间从 logo 中心向外扩散，标记层次 ──
+  // ── 冲击波环：点击瞬间从点击点向外扩散 ──
   function spawnVeilRings(cx, cy) {
     const cfg = [
-      { delay:  50, dur: 1.4, border: '1.5px solid rgba(0,220,255,0.70)' },
-      { delay: 220, dur: 1.8, border: '1px   solid rgba(0,185,225,0.45)' },
-      { delay: 420, dur: 2.2, border: '1px   solid rgba(0,150,210,0.28)' },
-      { delay: 650, dur: 2.6, border: '0.5px solid rgba(20,80,170,0.15)' },
+      { delay: 0,   dur: 1.5, border: '1px solid rgba(0,210,255,0.7)' },
+      { delay: 200, dur: 2.0, border: '0.5px solid rgba(0,210,255,0.4)' },
+      { delay: 450, dur: 2.5, border: '0.5px solid rgba(255,255,255,0.15)' },
     ];
+
     cfg.forEach(({ delay, dur, border }) => {
       const el = document.createElement('div');
       el.className = 'veil-ring';
-      el.style.left   = cx + 'px';
-      el.style.top    = cy + 'px';
-      el.style.width  = '220px';
-      el.style.height = '220px';
+      el.style.left = cx + 'px';
+      el.style.top = cy + 'px';
       el.style.border = border;
-      el.style.animationName           = 'veilRingExpand';
-      el.style.animationDuration       = dur + 's';
-      el.style.animationDelay          = delay + 'ms';
-      el.style.animationTimingFunction = 'cubic-bezier(0.12,0.8,0.32,1)';
-      el.style.animationFillMode       = 'both';
+      // 动画参数
+      el.style.animation = `veilRingExpand ${dur}s ${delay}ms cubic-bezier(0.15, 0.83, 0.66, 1) both`;
+      
       document.body.appendChild(el);
+      // 动画结束后自动销毁
       setTimeout(() => el.remove(), delay + dur * 1000 + 200);
     });
   }
 
-  // ── Logo 点击 → 触发全局 Reveal ──
-  function onLogoClick() {
+  // ── Logo 点击：触发转场 ──
+  function onLogoClick(e) {
     if (revealed) return;
     revealed = true;
 
-    // 计算 Logo 中心（像素坐标用于环，百分比用于遮罩渐变）
-    const rect = logoWrap.getBoundingClientRect();
-    const cx = rect.left + rect.width  / 2;
-    const cy = rect.top  + rect.height / 2;
-    const gx = (cx / window.innerWidth  * 100).toFixed(2) + '%';
+    // 获取点击坐标，用于 CSS clip-path 变量
+    const cx = e.clientX;
+    const cy = e.clientY;
+    const gx = (cx / window.innerWidth * 100).toFixed(2) + '%';
     const gy = (cy / window.innerHeight * 100).toFixed(2) + '%';
-    document.body.style.setProperty('--gx', gx);
-    document.body.style.setProperty('--gy', gy);
+    
+    document.documentElement.style.setProperty('--gx', gx);
+    document.documentElement.style.setProperty('--gy', gy);
 
-    // 点击闪光 & 锁定交互
+    // 状态切换：Logo 瞬间坍缩
     logoWrap.classList.remove('logo-hovered');
     logoWrap.classList.add('logo-clicked');
-    logoWrap.removeEventListener('mouseenter', onLogoEnter);
-    logoWrap.removeEventListener('mouseleave', onLogoLeave);
-    logoWrap.removeEventListener('click',      onLogoClick);
     document.getElementById('cur-ring')?.classList.remove('big');
 
-    // 即刻发射冲击波环（在黑幕上可见）
+    // 移除监听
+    window.removeEventListener('mousemove', onMouseMove);
+    logoWrap.removeEventListener('click', onLogoClick);
+
+    // 发射冲击波
     spawnVeilRings(cx, cy);
 
-    // 短暂延迟后切换到 revealed 状态，让点击动画先播放
+    // 短暂延迟后切换 Revealed 状态，触发 CSS 中的 clip-path 动画
     setTimeout(() => {
       document.body.classList.remove('intro-phase');
       document.body.classList.add('intro-revealed');
-      // veil 动画结束后移除元素（3.2s + 少量余量）
-      setTimeout(() => document.getElementById('intro-veil')?.remove(), 3600);
-    }, 200);
+      
+      // 遮罩动画结束后彻底清理 DOM（匹配 CSS 2.2s 过渡）
+      setTimeout(() => {
+        document.getElementById('intro-veil')?.remove();
+      }, 3000);
+    }, 150);
   }
 
-  // ── Logo 动画完成后设为可交互 ──
   function setLogoReady() {
     logoWrap.classList.add('logo-ready');
     logoWrap.addEventListener('mouseenter', onLogoEnter);
     logoWrap.addEventListener('mouseleave', onLogoLeave);
     logoWrap.addEventListener('click',      onLogoClick);
+    window.addEventListener('mousemove', onMouseMove);
   }
 
   function init() {
     logoWrap = document.getElementById('heroLogoWrap');
     if (!logoWrap) return;
 
-    // 立即设置开场状态：全黑、隐藏内容
+    // 初始状态
     document.body.classList.add('intro-phase');
 
-    // 等待 Logo 动画完成后开放交互
+    // 等待 Logo 动画加载至可交互状态
     setTimeout(setLogoReady, LOGO_READY_MS);
   }
 

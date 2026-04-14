@@ -37,11 +37,13 @@ const Loader = (() => {
 
       side.innerHTML = '';
 
-      // 可滚动章节列表容器（倒序，最新在顶）
-      const scrollWrap = document.createElement('div');
-      scrollWrap.className = 'novel-side-scroll';
+      // 最新 3 章（按日期降序取前三）
+      const top3 = [...metas]
+        .map((meta, i) => ({ meta, i }))
+        .sort((a, b) => (b.meta.date || '').localeCompare(a.meta.date || ''))
+        .slice(0, 3);
 
-      [...metas].map((meta, i) => ({ meta, i })).reverse().forEach(({ meta, i }) => {
+      top3.forEach(({ meta, i }) => {
         const a = document.createElement('a');
         a.href      = `reader.html?ch=${folders[i]}`;
         a.className = 'chapter-item';
@@ -49,13 +51,8 @@ const Loader = (() => {
           <div class="ch-title">${meta.title || folders[i]}</div>
           <div class="ch-date">更新于 ${meta.date || '——'}</div>
           <span class="ch-arrow">›</span>`;
-        scrollWrap.appendChild(a);
+        side.appendChild(a);
       });
-
-      const filler = document.createElement('div');
-      filler.style.cssText = 'flex:1; background:var(--bg1);';
-      scrollWrap.appendChild(filler);
-      side.appendChild(scrollWrap);
 
       // 底部固定：全部目录
       const allLink = document.createElement('a');
