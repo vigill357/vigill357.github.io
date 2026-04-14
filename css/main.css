@@ -8,9 +8,6 @@
   --gold:  #C8A96E; --gold2: #E8D0A0;
   --text:  #C8D8EE; --text2: #A8C4E0; --text3: #7AA0C0;
   --border:  rgba(74, 144, 217, 0.20); --border2: rgba(74, 144, 217, 0.40);
-  /* 动态变量：由 JS 控制 */
-  --gx: 50%;
-  --gy: 50%;
 }
 
 /* ╔═══════════════════════════════════════════╗
@@ -71,23 +68,24 @@ body::after {
   width: 100vw; height: 100vh;
   pointer-events: none; z-index: 9999;
 }
+/* 内部三脚架（直接跟随） */
 #cur {
   position: fixed; width: 44px; height: 44px;
   pointer-events: none; transform: translate(-50%, -50%);
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 3px var(--cyan));
 }
+/* 外部镂空三角（延迟跟随） */
 #cur-ring {
   position: fixed; width: 64px; height: 64px;
   pointer-events: none; transform: translate(-50%, -50%);
   mix-blend-mode: screen; opacity: 0.6;
-  transition: transform .3s cubic-bezier(0.23, 1, 0.32, 1), opacity .3s, width .3s, height .3s;
+  transition: transform .3s cubic-bezier(0.23, 1, 0.32, 1), opacity .3s;
 }
+/* 悬停状态 */
 #cur-ring.big {
   opacity: 1;
-  width: 90px; height: 90px;
-  transform: translate(-50%, -50%) rotate(60deg);
-  border: 1px solid var(--cyan);
+  transform: translate(-50%, -50%) rotate(60deg) scale(1.3);
 }
 
 /* ╔═══════════════════════════════════════════╗
@@ -103,119 +101,506 @@ body::after {
   to   { width: 100px; height: 100px; opacity: 0; }
 }
 
-/* 模块 6-14 保持原样，省略显示以便集中展示 Module 15 的修改内容... */
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 6 · 导航栏                    ║
+   ╚═══════════════════════════════════════════╝ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; border-bottom: 1px solid var(--border);
+  background: rgba(6, 12, 24, 0.88); backdrop-filter: blur(16px);
+}
+.nav-logo { display: flex; flex-direction: column; gap: 1px; text-decoration: none; }
+.nav-logo-main { font-family: 'Cinzel', serif; font-size: 15px; font-weight: 600; letter-spacing: .18em; color: var(--blue3); }
+.nav-logo-sub  { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: .25em; color: var(--text3); text-transform: uppercase; }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; letter-spacing: .08em;
+  text-transform: none; color: var(--text2); text-decoration: none;
+  transition: color .2s; position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 100%;
+  height: 1px; background: var(--cyan); transition: right .25s;
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-links a:hover::after { right: 0; }
+.nav-status {
+  font-family: 'Noto Sans SC', sans-serif; font-size: 12px; letter-spacing: .08em;
+  color: var(--cyan); border: 1px solid rgba(91, 200, 232, 0.3);
+  padding: 4px 12px; display: flex; align-items: center; gap: 6px;
+}
+.nav-status::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--cyan); animation: blink 2s infinite;
+}
 
 /* ╔═══════════════════════════════════════════╗
-   ║         模块 15 · 开场 Intro 动画 (新)      ║
+   ║         模块 7 · 首屏 Hero                 ║
+   ╚═══════════════════════════════════════════╝ */
+.hero {
+  position: relative; z-index: 2; min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 48px 60px; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: 0; right: 200px; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border2) 30%, var(--border2) 70%, transparent);
+}
+.orb  { position: absolute; pointer-events: none; border-radius: 50%; animation: breathe 5s ease-in-out infinite; }
+.orb1 { width:700px; height:700px; right:-150px; top:50%; transform:translateY(-55%); background:radial-gradient(circle, rgba(37,99,168,.12) 0%, transparent 65%); animation: breathe1 5s ease-in-out infinite; }
+.orb2 { width:400px; height:400px; right:80px; top:15%; background:radial-gradient(circle, rgba(91,200,232,.06) 0%, transparent 65%); animation-duration:7s; animation-direction:reverse; }
+.orb3 { width:300px; height:300px; left:-60px; bottom:10%; background:radial-gradient(circle, rgba(37,99,168,.07) 0%, transparent 65%); animation-duration:6s; }
+
+.hero-content { max-width: 620px; position: relative; }
+.hero-tag {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: .35em;
+  text-transform: uppercase; color: var(--cyan); margin-bottom: 28px;
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0; animation: fadeUp .6s 4.6s forwards;
+}
+.hero-tag::before { content: ''; display: block; width: 36px; height: 1px; background: var(--cyan); }
+.hero-title {
+  font-family: 'Noto Serif SC', serif; font-weight: 300;
+  font-size: clamp(42px, 5.5vw, 72px); line-height: 1.15; letter-spacing: .06em;
+  color: var(--text); margin-bottom: 10px;
+  opacity: 0; animation: fadeUp .7s 4.7s forwards;
+}
+.hero-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--blue3), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-en  { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: .25em; color: var(--text3); margin-bottom: 40px; opacity: 0; animation: fadeUp .7s 4.8s forwards; }
+.hero-desc { font-size: 15px; line-height: 2; color: var(--text2); max-width: 460px; margin-bottom: 48px; border-left: 2px solid var(--blue0); padding-left: 20px; opacity: 0; animation: fadeUp .7s 4.9s forwards; }
+.hero-btns { display: flex; gap: 14px; align-items: center; opacity: 0; animation: fadeUp .7s 5.0s forwards; }
+.btn-a, .btn-b {
+  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; letter-spacing: .12em;
+  padding: 13px 30px; text-decoration: none; display: inline-block;
+  transition: all .2s;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+.btn-a       { color: var(--bg0); background: var(--blue2); }
+.btn-a:hover { background: var(--cyan); }
+.btn-b       { color: var(--blue3); border: 1px solid var(--border2); }
+.btn-b:hover { border-color: var(--cyan2); color: var(--cyan2); }
+
+/* Hero 信息面板 */
+.hero-panel {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 220px; border: 1px solid var(--border); background: rgba(10, 21, 37, 0.7);
+  padding: 24px; opacity: 0; animation: fadeLeft .8s 5.1s forwards;
+}
+.hero-panel::before {
+  content: 'SYS.INFO'; position: absolute; top: -9px; left: 16px;
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text3);
+  background: var(--bg0); padding: 0 8px;
+}
+.panel-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(74, 144, 217, 0.08); }
+.panel-row:last-child { border-bottom: none; }
+.panel-key { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; color: var(--text2); }
+.panel-val { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--blue3); }
+.panel-val.live { color: var(--cyan); }
+
+.scroll-hint {
+  position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  font-family: 'Noto Sans SC', sans-serif; font-size: 12px; letter-spacing: .2em; color: var(--text3);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0; animation: fadeIn 1s 5.5s forwards;
+}
+.scroll-arrow { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--border2), transparent); animation: scrollDown 1.5s ease-in-out infinite; }
+
+/* ── Hero Logo 居中容器 ── */
+.hero-logo-wrap {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -52%);
+  z-index: 3; pointer-events: none; will-change: transform;
+}
+
+/* ── Logo SVG 描边动画 ── */
+#hlod {
+  stroke-dasharray: 305; stroke-dashoffset: 305;
+  animation: logoDash 1.3s cubic-bezier(.38,0,.12,1) .4s forwards;
+}
+#hlmd {
+  stroke-dasharray: 200; stroke-dashoffset: 200;
+  animation: logoDash 1.05s cubic-bezier(.38,0,.12,1) .95s forwards;
+}
+#hlid {
+  stroke-dasharray: 170; stroke-dashoffset: 170;
+  animation: logoDash .8s cubic-bezier(.38,0,.12,1) 1.38s forwards;
+}
+@keyframes logoDash { to { stroke-dashoffset: 0; } }
+
+.conn { opacity: 0; animation: logoFin .55s ease 1.58s forwards; }
+.ctri { opacity: 0; animation: logoFin .55s ease forwards; }
+@keyframes logoFin { to { opacity: 1; } }
+
+.bl {
+  opacity: 0;
+  transform-box: fill-box; transform-origin: 50% 0%;
+  animation: logoFlagUnfold 1.1s cubic-bezier(.2,.9,.3,1.1) forwards;
+}
+@keyframes logoFlagUnfold {
+  0%   { opacity: 0; transform: scaleY(0); }
+  50%  { opacity: 0.8; }
+  100% { opacity: 1;  transform: scaleY(1); }
+}
+
+#hlCore { opacity: 0; animation: logoCoreIn 1.7s ease 2.55s forwards; }
+@keyframes logoCoreIn {
+  0%  { opacity: 0; }
+  12% { opacity: 1; filter: brightness(5) saturate(2); }
+  26% { opacity: .4; filter: none; }
+  46% { opacity: 1; filter: brightness(3) saturate(1.5); }
+  66% { opacity: .72; filter: none; }
+  100%{ opacity: 1;  filter: none; }
+}
+
+/* ── Logo 循环光效 ── */
+.neon { animation: logoNeon 3.4s ease-in-out 4.5s infinite; }
+@keyframes logoNeon {
+  0%,100% {
+    filter:
+      drop-shadow(0 0 2px rgba(0,255,255,.95))
+      drop-shadow(0 0 7px rgba(0,220,255,.65))
+      drop-shadow(0 0 18px rgba(0,180,255,.28));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 4px rgba(0,255,255,1))
+      drop-shadow(0 0 16px rgba(0,220,255,.88))
+      drop-shadow(0 0 42px rgba(0,180,255,.50))
+      drop-shadow(0 0 80px rgba(0,140,255,.18));
+  }
+}
+
+.logo-breathe { animation: logoBreath 4.5s ease-in-out 4.5s infinite; }
+@keyframes logoBreath {
+  0%,100% { filter: drop-shadow(0 0 2px rgba(0,160,220,.42)) drop-shadow(0 0 5px rgba(0,100,180,.16)); }
+  50%      { filter: drop-shadow(0 0 5px rgba(0,200,240,.72)) drop-shadow(0 0 12px rgba(0,130,210,.32)); }
+}
+
+.gpulse-dark { animation: logoPulseDark 3.8s ease-in-out 4.5s infinite; }
+@keyframes logoPulseDark {
+  0%,100% {
+    filter:
+      drop-shadow(0 0 1px rgba(197,155,39,.3))
+      drop-shadow(0 0 2px rgba(139,101,8,.1));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 2px rgba(197,155,39,.6))
+      drop-shadow(0 0 5px rgba(139,101,8,.3));
+  }
+}
+
+.core-red-glow { animation: logoCoreRed 3.8s ease-in-out 4.5s infinite; }
+@keyframes logoCoreRed {
+  0%,100% {
+    filter:
+      drop-shadow(0 0 1px rgba(139,0,0,.3))
+      drop-shadow(0 0 3px rgba(80,0,0,.1));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 2px rgba(216,37,37,.6))
+      drop-shadow(0 0 8px rgba(139,0,0,.3));
+  }
+}
+
+.spin {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: logoCCW 38s linear 4.5s infinite;
+  filter: brightness(0.35) opacity(0.4);
+}
+@keyframes logoCCW { to { transform: rotate(-360deg); } }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 8 · 内容板块通用              ║
+   ╚═══════════════════════════════════════════╝ */
+section { position: relative; z-index: 2; padding: 80px 48px; }
+.sec-head  { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+.sec-label { font-family: 'Noto Sans SC', sans-serif; font-size: 13px; letter-spacing: .15em; color: var(--cyan); }
+.sec-line  { flex: 1; height: 1px; background: var(--border); }
+.sec-num   { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--text3); }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 9 · 小说板块                  ║
+   ╚═══════════════════════════════════════════╝ */
+.novel-wrap  { display: grid; grid-template-columns: 1fr 340px; gap: 1px; background: var(--border); }
+.novel-main  { background: var(--bg1); padding: 48px; position: relative; overflow: hidden; transition: background .3s; text-decoration: none; display: block; color: inherit; }
+.novel-main:hover { background: var(--bg2); }
+
+/* MAIN 徽章（替代原 ::after 伪元素，支持呼吸灯） */
+.novel-badge {
+  position: absolute; top: 24px; right: 24px;
+  font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--gold);
+  border: 1px solid rgba(200, 169, 110, 0.3); padding: 3px 10px 3px 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.novel-badge::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold); animation: blink 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.novel-tag   { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; color: var(--blue3); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.novel-title { font-family: 'Noto Serif SC', serif; font-size: 32px; margin-bottom: 20px; transition: color .2s; }
+.novel-desc  { font-size: 14px; line-height: 1.9; color: var(--text2); font-style: italic; margin-bottom: 32px; }
+.novel-stats { display: flex; gap: 28px; border-top: 1px solid var(--border); padding-top: 20px; }
+.stat-item   { display: flex; flex-direction: column; gap: 4px; }
+.stat-label  { font-family: 'Noto Sans SC', sans-serif; font-size: 11px; color: var(--text3); }
+.stat-val    { font-family: 'Share Tech Mono', monospace; font-size: 14px; color: var(--blue3); }
+.novel-side    { background: var(--bg1); display: flex; flex-direction: column; gap: 1px; }
+.chapter-item  { background: var(--bg1); padding: 24px 28px; transition: background .25s; text-decoration: none; display: block; position: relative; }
+.chapter-item:hover { background: var(--bg2); }
+.ch-title  { font-family: 'Noto Serif SC', serif; font-size: 15px; color: var(--text); margin-bottom: 6px; }
+.ch-date   { font-family: 'Noto Sans SC', sans-serif; font-size: 11px; color: var(--text3); }
+.ch-arrow  { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--border2); transition: all .2s; }
+.chapter-item:hover .ch-arrow { color: var(--cyan); right: 16px; }
+.chapter-item--all { border-top: 1px solid var(--border); background: rgba(37,99,168,.06); }
+.chapter-item--all:hover { background: rgba(37,99,168,.14); }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 10 · 衍生故事板块             ║
+   ╚═══════════════════════════════════════════╝ */
+.stories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.story-card    { background: var(--bg1); padding: 32px; transition: background .25s; text-decoration: none; display: block; position: relative; }
+.story-card:hover { background: var(--bg2); }
+.story-title   { font-family: 'Noto Serif SC', serif; font-size: 20px; margin-bottom: 12px; }
+.story-excerpt { font-size: 13px; line-height: 1.85; color: var(--text2); font-style: italic; margin-bottom: 20px; }
+.story-meta    { display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; font-family: 'Noto Sans SC', sans-serif; font-size: 12px; color: var(--text3); }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 11 · 插画图鉴板块             ║
+   ╚═══════════════════════════════════════════╝ */
+.gallery-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); }
+.gallery-item  { background: var(--bg1); aspect-ratio: 2/3; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; transition: background .25s; position: relative; }
+.gallery-frame { width: 55%; aspect-ratio: 1; border: 1px solid var(--border); position: relative; transition: all .3s; }
+.gallery-item:hover .gallery-frame { border-color: var(--blue2); transform: scale(1.04); }
+.gallery-label { position: absolute; bottom: 16px; font-size: 12px; color: var(--text2); }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 12 · 世界观板块               ║
+   ╚═══════════════════════════════════════════╝ */
+.world-grid  { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
+.world-card  { background: var(--bg1); padding: 36px 40px; transition: background .25s; text-decoration: none; display: block; position: relative; }
+.world-card:hover { background: var(--bg2); }
+.world-icon  { font-family: 'Share Tech Mono', monospace; font-size: 22px; color: var(--blue0); margin-bottom: 20px; }
+.world-title { font-family: 'Noto Serif SC', serif; font-size: 18px; margin-bottom: 10px; }
+.world-count { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; border-top: 1px solid var(--border); padding-top: 14px; color: var(--text3); }
+.world-count em { color: var(--cyan); font-style: normal; }
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 13 · 页脚                     ║
+   ╚═══════════════════════════════════════════╝ */
+footer {
+  border-top: 1px solid var(--border); padding: 28px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(6, 12, 24, 0.6); position: relative; z-index: 2;
+}
+.footer-logo { font-family: 'Cinzel', serif; font-size: 13px; color: var(--blue3); }
+.footer-info { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; color: var(--text3); }
+
+
+/* 衍生故事板块 · "更多"入口 */
+.sec-num {
+  position: relative;  /* 让 .sec-more 相对它定位，不影响行高 */
+}
+
+.sec-more {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  white-space: nowrap;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.22s;
+}
+
+.sec-more::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: var(--cyan);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sec-more:hover {
+  color: var(--cyan);
+}
+
+.sec-more:hover::after {
+  transform: scaleX(1);
+}
+
+/* ╔═══════════════════════════════════════════╗
+   ║         模块 15 · 开场 Intro 动画           ║
    ╚═══════════════════════════════════════════╝ */
 
-/* ── 黑色遮罩：改为 clip-path 驱动 ── */
+/* ── 黑色遮罩：覆盖网格/内容，logo所在的hero浮于其上 ── */
 #intro-veil {
   position: fixed; inset: 0;
   background: #000;
-  z-index: 1000;
+  z-index: 10;
   pointer-events: none;
-  /* 初始为全屏黑色 */
-  clip-path: circle(100% at var(--gx) var(--gy));
-  /* 丝滑的瞳孔舒张曲线 */
-  transition: clip-path 2.2s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* ── 初始状态：隐藏除 Logo 外的所有内容 ── */
-body.intro-phase nav,
+/* ── intro-phase ──
+   hero 整体提升到 veil(z:10) 上方，再逐一隐藏 hero 内所有子元素，
+   只留 hero-logo-wrap 可见 → 纯黑 + 唯一 logo */
+body.intro-phase .hero         { z-index: 15; }
+body.intro-phase .hero::before { opacity: 0; }          /* 右侧竖线 */
+body.intro-phase .orb          { opacity: 0; }          /* 三个光球全隐 */
+body.intro-phase nav           { opacity: 0; pointer-events: none; }
 body.intro-phase section,
-body.intro-phase footer {
-  opacity: 0;
-  pointer-events: none;
-}
+body.intro-phase footer        { opacity: 0; pointer-events: none; }
+/* 阻止 hero 文字内容的原生 CSS 动画提前触发 */
+body.intro-phase .hero-tag,
+body.intro-phase .hero-title,
+body.intro-phase .hero-en,
+body.intro-phase .hero-desc,
+body.intro-phase .hero-btns,
+body.intro-phase .hero-panel,
+body.intro-phase .scroll-hint  { animation: none !important; opacity: 0; }
 
-/* 内容层推远效果的初始状态 */
-body.intro-phase .hero-content {
-  transform: scale(1.08);
-  opacity: 0;
-}
-
-/* ── Logo 交互状态 ── */
-.hero-logo-wrap {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1001; /* 必须高于遮罩 */
-  pointer-events: none;
-  transition: opacity 0.8s ease;
-}
-
+/* ── Logo 可交互状态 ── */
 .hero-logo-wrap.logo-ready {
-  pointer-events: auto;
+  pointer-events: auto !important;
+  transition:
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter    0.45s ease;
 }
 
-/* 悬停微动 */
+/* ── Logo 悬浮选中：亮度提升，以青色系呈现，无荧光扩散 ── */
 .hero-logo-wrap.logo-hovered {
-  filter: brightness(1.5) drop-shadow(0 0 15px var(--cyan));
+  transform: translate(-50%, -52%) translateY(-10px) scale(1.09) !important;
+  filter: brightness(1.7) saturate(1.3) contrast(1.08);
 }
 
-/* 点击坍缩 */
+/* ── 点击 Logo 闪光 ── */
+@keyframes logoClickFlash {
+  0%   { transform: translate(-50%, -52%) translateY(-10px) scale(1.09);
+         filter: brightness(1.7) saturate(1.3); }
+  35%  { transform: translate(-50%, -52%) translateY(-16px) scale(1.16);
+         filter: brightness(3.0) saturate(1.8) contrast(1.15); }
+  100% { transform: translate(-50%, -52%) scale(1);
+         filter: brightness(1); }
+}
 .hero-logo-wrap.logo-clicked {
-  transform: translate(-50%, -50%) scale(0) !important;
-  opacity: 0;
-  transition: all 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) !important;
+  animation: logoClickFlash 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  pointer-events: none !important;
+  transition: none !important;
 }
 
-/* ── 揭晓状态 ── */
+/* ── Veil：多层坍塌式褪去（由内向外，有层次感地瓦解） ── */
+@keyframes veilReveal {
+  from {
+    /* 初始：logo 中心已透明，向外依次过渡为半透明→全黑，形成有层次的晕染边缘 */
+    -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
+      transparent      175px,
+      rgba(0,0,0,.04)  215px,
+      rgba(0,0,0,.20)  285px,
+      rgba(0,0,0,.52)  360px,
+      rgba(0,0,0,.86)  420px,
+      black            460px);
+    mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
+      transparent      175px,
+      rgba(0,0,0,.04)  215px,
+      rgba(0,0,0,.20)  285px,
+      rgba(0,0,0,.52)  360px,
+      rgba(0,0,0,.86)  420px,
+      black            460px);
+    opacity: 1;
+  }
+  to {
+    /* 末态：全透明（软边缘推至屏幕外），叠加 opacity:0 确保边角也干净消散 */
+    -webkit-mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
+      transparent      2500px,
+      rgba(0,0,0,.04)  2600px,
+      rgba(0,0,0,.20)  2700px,
+      rgba(0,0,0,.52)  2780px,
+      rgba(0,0,0,.86)  2850px,
+      black            2900px);
+    mask-image: radial-gradient(circle at var(--gx,50%) var(--gy,45%),
+      transparent      2500px,
+      rgba(0,0,0,.04)  2600px,
+      rgba(0,0,0,.20)  2700px,
+      rgba(0,0,0,.52)  2780px,
+      rgba(0,0,0,.86)  2850px,
+      black            2900px);
+    opacity: 0;
+  }
+}
+/* fill-mode: both → from 帧在切换瞬间立即生效，logo 始终可见 */
 body.intro-revealed #intro-veil {
-  clip-path: circle(0% at var(--gx) var(--gy));
+  animation: veilReveal 3.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* 冲击波环动画 */
+/* ── 点击冲击波环：从 logo 中心向外扩散，可见地标记层次 ── */
 .veil-ring {
   position: fixed;
   border-radius: 50%;
-  z-index: 1002;
+  z-index: 12;
   pointer-events: none;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
 }
 
 @keyframes veilRingExpand {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  10% { opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(15); opacity: 0; }
+  from { transform: translate(-50%,-50%) scale(1);  opacity: 1; }
+  to   { transform: translate(-50%,-50%) scale(22); opacity: 0; }
 }
 
-/* ── 内容按顺序浮现 (Stagger) ── */
+/* ── Reveal 层次（fill-mode: both 防止延迟期间闪现） ──
+   节奏：veil扩散(0~1.9s) → nav → orb → hero逐行 → panel → 板块逐节 → 页脚 → 提示 */
 
-/* 1. 导航栏 */
+body.intro-revealed .hero::before { opacity: 1; }
+
+/* 1. 导航：洞刚打开就滑入 */
 body.intro-revealed nav {
-  animation: fadeUp 0.8s 0.3s ease both !important;
+  animation: fadeUp 0.55s 0.25s ease both !important;
   pointer-events: auto !important;
 }
 
-/* 2. 背景光球 */
+/* 2. 光球随背景浮现 */
 body.intro-revealed .orb {
-  animation: fadeIn 1.5s 0.6s ease both;
+  animation: fadeIn 1.2s 0.50s ease both;
 }
 
-/* 3. Hero 内容缩放推回 */
-body.intro-revealed .hero-content {
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 2s 0.5s ease, transform 2.5s 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+/* 3. Hero 标签/标题逐行，间隔拉宽让层次清晰 */
+body.intro-revealed .hero-tag    { animation: fadeUp .5s  0.55s ease both; }
+body.intro-revealed .hero-title  { animation: fadeUp .6s  0.75s ease both; }
+body.intro-revealed .hero-en     { animation: fadeUp .6s  0.95s ease both; }
+body.intro-revealed .hero-desc   { animation: fadeUp .6s  1.15s ease both; }
+body.intro-revealed .hero-btns   { animation: fadeUp .6s  1.35s ease both; }
+
+/* 4. 信息面板：文字全部就绪后才滑入 */
+body.intro-revealed .hero-panel  { animation: fadeLeft .7s 1.55s ease both; }
+
+/* 5. 向下提示 */
+body.intro-revealed .scroll-hint { animation: fadeIn .7s  1.80s ease both; }
+
+/* 6. 内容板块：每节错开 0.2s，用 fadeUp 增加纵深感 */
+body.intro-revealed section:nth-of-type(1) {
+  animation: fadeUp .65s 0.65s ease both; pointer-events: auto !important;
+}
+body.intro-revealed section:nth-of-type(2) {
+  animation: fadeUp .65s 0.85s ease both; pointer-events: auto !important;
+}
+body.intro-revealed section:nth-of-type(3) {
+  animation: fadeUp .65s 1.05s ease both; pointer-events: auto !important;
+}
+body.intro-revealed section:nth-of-type(4) {
+  animation: fadeUp .65s 1.25s ease both; pointer-events: auto !important;
 }
 
-/* 4. 章节与板块逐行滑入 */
-body.intro-revealed .hero-tag    { animation: fadeUp .6s 0.8s ease both; }
-body.intro-revealed .hero-title  { animation: fadeUp .6s 1.0s ease both; }
-body.intro-revealed .hero-desc   { animation: fadeUp .6s 1.2s ease both; }
-body.intro-revealed .hero-btns   { animation: fadeUp .6s 1.4s ease both; }
-
-/* 5. 信息面板从右侧滑入 */
-body.intro-revealed .hero-panel  { animation: fadeLeft .8s 1.6s ease both; }
-
-/* 6. 其他 Section 联动 */
-body.intro-revealed section {
-  pointer-events: auto !important;
-  animation: fadeIn 1.5s 1.2s ease both;
-}
-
+/* 7. 页脚压轴 */
 body.intro-revealed footer {
-  animation: fadeIn 1s 1.8s ease both;
+  animation: fadeIn .6s 1.45s ease both; pointer-events: auto !important;
 }
