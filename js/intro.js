@@ -76,8 +76,31 @@ const Intro = (() => {
       document.body.classList.remove('intro-phase');
       document.body.classList.add('intro-revealed');
       // veil 动画结束后移除元素（3.2s + 少量余量）
-      setTimeout(() => document.getElementById('intro-veil')?.remove(), 3600);
+      setTimeout(() => {
+        document.getElementById('intro-veil')?.remove();
+        document.getElementById('veil-svg')?.remove();   // 清理 SVG 滤镜定义
+      }, 3600);
     }, 200);
+
+    // ── 数字化碎裂：在 veil reveal 期间驱动 feDisplacementMap.scale ──
+    // 节奏：入场（0~6%）急速爬升 → 峰值震荡（6%~82%）→ 尾声（82%~100%）收敛
+    const displace = document.getElementById('veil-displace');
+    if (displace) {
+      const PEAK = 80;         // 最大位移像素（±40px 实际偏移）
+      const TOTAL = 3200;      // 与 veilReveal 动画同步
+      const t0 = performance.now() + 200; // 对齐 body 类切换时刻
+      (function tick(now) {
+        const p = (now - t0) / TOTAL;    // 归一化进度 [0,1]
+        if (p < 0)    { requestAnimationFrame(tick); return; }
+        if (p >= 1)   { displace.setAttribute('scale', '0'); return; }
+        let scale;
+        if      (p < 0.06) scale = (p / 0.06) * PEAK;           // 急速入场
+        else if (p < 0.82) scale = PEAK;                          // 峰值持续
+        else               scale = ((1 - p) / 0.18) * PEAK;      // 收敛淡出
+        displace.setAttribute('scale', scale.toFixed(1));
+        requestAnimationFrame(tick);
+      })(performance.now());
+    }
   }
 
   // ── Logo 动画完成后设为可交互 ──

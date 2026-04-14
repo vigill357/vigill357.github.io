@@ -13,8 +13,23 @@
 </head>
 <body>
 
-  <!-- 开场黑色遮罩：由 intro.js 控制褪去 -->
-  <div id="intro-veil"></div>
+  <!-- SVG 滤镜定义：fractalNoise 位移 → 遮罩边缘数字化碎裂 -->
+  <svg id="veil-svg" xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="veil-noise" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="linearRGB">
+        <!-- fractalNoise 产生方块感更强的"数字"纹理，baseFrequency 控制碎块尺寸 -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.022 0.031" numOctaves="4" seed="23" result="noiseMap"/>
+        <!-- scale 由 JS 动态驱动：reveal 期间 0→峰值→0，仪式感渐入渐出 -->
+        <feDisplacementMap id="veil-displace" in="SourceGraphic" in2="noiseMap"
+          scale="0" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- 开场黑色遮罩：外层持有 filter（操作 mask 输出），内层持有 mask 动画 -->
+  <div id="intro-veil">
+    <div id="intro-veil-mask"></div>
+  </div>
 
   <!-- ═══════════ 几何光标 ═══════════ -->
   <div id="cursor-container">

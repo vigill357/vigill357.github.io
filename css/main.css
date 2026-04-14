@@ -445,12 +445,18 @@ footer {
    ║         模块 15 · 开场 Intro 动画           ║
    ╚═══════════════════════════════════════════╝ */
 
-/* ── 黑色遮罩：覆盖网格/内容，logo所在的hero浮于其上 ── */
+/* ── 黑色遮罩：外层是 SVG 位移滤镜的宿主，内层是真正的黑色幕布 ──
+   渲染顺序：inner-mask-image → outer-filter(位移) → 最终输出
+   这样 feDisplacementMap 才能碎裂遮罩边缘而非整块纯黑 */
 #intro-veil {
   position: fixed; inset: 0;
-  background: #000;
   z-index: 10;
   pointer-events: none;
+  filter: url(#veil-noise);   /* 位移扰动：scale 由 JS 动态驱动 */
+}
+#intro-veil-mask {
+  position: absolute; inset: 0;
+  background: #000;            /* 真正的幕布背景 */
 }
 
 /* ── intro-phase ──
@@ -540,7 +546,7 @@ body.intro-phase .scroll-hint  { animation: none !important; opacity: 0; }
   }
 }
 /* fill-mode: both → from 帧在切换瞬间立即生效，logo 始终可见 */
-body.intro-revealed #intro-veil {
+body.intro-revealed #intro-veil-mask {
   animation: veilReveal 3.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
